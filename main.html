@@ -1,0 +1,6334 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
+>
+
+<title>DevOS Mobile Studio v1.45.32</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #080b12;
+  color: #fff;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* TOP BAR */
+
+.topbar {
+  height: 56px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  background: #0d111b;
+  border-bottom: 1px solid #202838;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.top-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.top-btn {
+  border: 0;
+  color: white;
+  background: #182131;
+  padding: 8px 10px;
+  border-radius: 9px;
+  font-size: 12px;
+}
+
+.top-btn.primary {
+  background: #2563eb;
+}
+
+/* WORKSPACE */
+
+.workspace {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 20px 10px 220px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background:
+    radial-gradient(circle at 50% 0%, #172033 0%, #080b12 55%);
+}
+
+/* EDITOR */
+
+.phone {
+  width: min(1100px, 100%);
+  height: 800px;
+  max-width: 100%;
+  flex-shrink: 0;
+  background: #111827;
+  border: 1px solid #273449;
+  border-radius: 12px;
+  box-shadow:
+    0 25px 70px rgba(0,0,0,.35);
+  overflow: hidden;
+  position: relative;
+}
+
+.phone-screen {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background: #111827;
+}
+
+.statusbar {
+  display: none;
+}
+
+/* CANVAS */
+
+.canvas-element {
+  position: absolute;
+  overflow: hidden;
+  user-select: none;
+}
+
+.editor-selected {
+  outline: 2px solid #3b82f6 !important;
+  outline-offset: 2px;
+}
+
+.canvas-element img {
+  pointer-events: none;
+}
+
+/* COMPONENTS */
+
+.el-text {
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.el-heading {
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  font-size: 24px;
+  font-weight: 700;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.el-label {
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  color: #cbd5e1;
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.el-button {
+  border: 0;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 4px 8px;
+  font-weight: 600;
+  overflow: hidden;
+}
+
+.el-button img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.el-button.image-top {
+  flex-direction: column;
+}
+
+.el-button.image-only img {
+  width: 100%;
+  height: 100%;
+}
+
+.el-input {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #374151;
+  background: #111827;
+  color: white;
+  padding: 8px 10px;
+  outline: none;
+}
+
+.el-textarea {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #374151;
+  background: #111827;
+  color: white;
+  padding: 8px 10px;
+  outline: none;
+  resize: none;
+  border-radius: 8px;
+}
+
+.el-card {
+  background: #1a2230;
+  border: 1px solid #2b3648;
+  border-radius: 12px;
+}
+
+.el-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.el-progress-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.el-progress {
+  width: 100%;
+  height: 8px;
+  background: #263244;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.el-progress-bar {
+  height: 100%;
+  background: #2563eb;
+  border-radius: 99px;
+}
+
+.el-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: #111827;
+  border-top: 1px solid #263244;
+}
+
+.el-sidebar {
+  width: 100%;
+  height: 100%;
+  background: #111827;
+  border-right: 1px solid #263244;
+  padding: 10px;
+}
+
+.el-tabbar {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: #111827;
+  border-top: 1px solid #263244;
+}
+
+.el-terminal {
+  width: 100%;
+  height: 100%;
+  background: #050505;
+  color: #4ade80;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 11px;
+}
+
+.el-checkbox,
+.el-radio {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: white;
+}
+
+.el-checkbox input,
+.el-radio input {
+  width: 18px;
+  height: 18px;
+}
+
+.el-switch {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.el-switch-track {
+  width: 48px;
+  height: 26px;
+  border-radius: 99px;
+  background: #334155;
+  position: relative;
+  transition: .2s;
+}
+
+.el-switch-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+  transition: .2s;
+}
+
+.el-switch.on .el-switch-track {
+  background: #2563eb;
+}
+
+.el-switch.on .el-switch-thumb {
+  left: 25px;
+}
+
+.el-slider {
+  width: 100%;
+  height: 100%;
+  accent-color: #2563eb;
+}
+
+.el-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #2563eb;
+  color: white;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+}
+
+.el-divider {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.el-divider-line {
+  width: 100%;
+  height: 1px;
+  background: #334155;
+}
+
+.el-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #2563eb;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  overflow: hidden;
+}
+
+.el-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.el-spinner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.el-spinner-circle {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #334155;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.el-list {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #111827;
+}
+
+.el-list-item {
+  padding: 9px 10px;
+  border-bottom: 1px solid #263244;
+  color: #e2e8f0;
+  font-size: 12px;
+}
+
+.el-scrollview {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background: #111827;
+  padding: 10px;
+  color: white;
+}
+
+.el-modal {
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.el-modal-box {
+  width: 90%;
+  min-height: 100px;
+  background: #1a2230;
+  border: 1px solid #334155;
+  border-radius: 14px;
+  padding: 15px;
+  color: white;
+}
+
+.el-dropdown {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #374151;
+  background: #111827;
+  color: white;
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+
+.el-video,
+.el-audio {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+
+/* =========================================================
+   LIQUID GLASS ELEMENTS
+========================================================= */
+
+.el-liquid-glass,
+.el-liquid-glass-button,
+.el-liquid-glass-card,
+.el-liquid-glass-nav,
+.el-liquid-glass-tabbar,
+.el-liquid-glass-modal {
+  width: 100%;
+  height: 100%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.18),
+      rgba(255,255,255,.06)
+    );
+
+  border: 1px solid rgba(255,255,255,.22);
+
+  backdrop-filter:
+    blur(18px)
+    saturate(150%);
+
+  -webkit-backdrop-filter:
+    blur(18px)
+    saturate(150%);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.22),
+    0 10px 35px rgba(0,0,0,.18);
+
+  padding: 10px;
+}
+
+.el-liquid-glass {
+  border-radius: 18px;
+}
+
+.el-liquid-glass-button {
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform .15s ease,
+    background .15s ease,
+    box-shadow .15s ease;
+}
+
+.el-liquid-glass-button:active {
+  transform: scale(.97);
+}
+
+.el-liquid-glass-card {
+  border-radius: 20px;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.el-liquid-glass-nav {
+  border-radius: 18px;
+  justify-content: space-around;
+}
+
+.el-liquid-glass-tabbar {
+  border-radius: 20px;
+  justify-content: space-around;
+}
+
+.el-liquid-glass-modal {
+  border-radius: 24px;
+  padding: 18px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.28),
+    0 20px 55px rgba(0,0,0,.32);
+}
+
+
+/* EDITOR PANEL */
+
+.bottom-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2000;
+  background: #0c111a;
+  border-top: 1px solid #263244;
+  box-shadow: 0 -12px 40px rgba(0,0,0,.4);
+  transition: transform .25s ease;
+}
+
+/* PANEL TOGGLE */
+
+.panel-toggle {
+  position: absolute;
+  left: 50%;
+  top: -32px;
+  transform: translateX(-50%);
+  width: 58px;
+  height: 30px;
+  border: 1px solid #263244;
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
+  background: #0c111a;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  z-index: 2001;
+}
+
+.bottom-panel.collapsed {
+  transform: translateY(100%);
+}
+
+.bottom-panel.collapsed .panel-toggle {
+  top: -42px;
+  border-bottom: 1px solid #263244;
+  border-radius: 10px;
+}
+
+.tabs {
+  height: 48px;
+  display: flex;
+  overflow-x: auto;
+  border-bottom: 1px solid #202838;
+}
+
+.tab {
+  min-width: 90px;
+  flex: 1;
+  border: 0;
+  color: #94a3b8;
+  background: transparent;
+  font-size: 12px;
+}
+
+.tab.active {
+  color: white;
+  background: #162033;
+}
+
+.panel-content {
+  height: 160px;
+  overflow-y: auto;
+  padding: 9px;
+}
+
+/* SCREEN LIST */
+
+.screen-list {
+  display: flex;
+  gap: 7px;
+  overflow-x: auto;
+}
+
+.screen-item {
+  min-width: 100px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #273449;
+  background: #121a27;
+  color: white;
+  text-align: left;
+  font-size: 12px;
+}
+
+.screen-item.active {
+  border-color: #3b82f6;
+  background: #172554;
+}
+
+.add-screen {
+  min-width: 100px;
+  border: 1px dashed #475569;
+  background: transparent;
+  color: #93c5fd;
+  border-radius: 10px;
+}
+
+/* FORMS */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field.full {
+  grid-column: 1 / -1;
+}
+
+.field label {
+  color: #94a3b8;
+  font-size: 10px;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  min-height: 34px;
+  border: 1px solid #293548;
+  background: #111827;
+  color: white;
+  border-radius: 8px;
+  padding: 7px 8px;
+  outline: none;
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: #3b82f6;
+}
+
+textarea {
+  resize: none;
+}
+
+/* BUTTONS */
+
+.action-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.action-btn {
+  flex: 1;
+  border: 0;
+  border-radius: 8px;
+  padding: 9px;
+  background: #1e293b;
+  color: white;
+  font-size: 11px;
+}
+
+.action-btn.primary {
+  background: #2563eb;
+}
+
+.action-btn.danger {
+  background: #7f1d1d;
+}
+
+.secondary-btn,
+.danger-btn {
+  width: 100%;
+  border: 0;
+  border-radius: 9px;
+  padding: 10px;
+  color: white;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.secondary-btn {
+  background: #263244;
+}
+
+.danger-btn {
+  background: #7f1d1d;
+}
+
+/* IMAGE */
+
+.image-preview {
+  margin-top: 6px;
+  width: 100%;
+  height: 70px;
+  border-radius: 9px;
+  background: #080d15;
+  border: 1px solid #263244;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* ELEMENT LIST */
+
+.element-list {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 3px;
+  flex-wrap: wrap;
+}
+
+.element-item {
+  min-width: 105px;
+  padding: 8px;
+  border-radius: 9px;
+  border: 1px solid #273449;
+  background: #121a27;
+  color: #cbd5e1;
+  font-size: 11px;
+}
+
+.element-item.active {
+  border-color: #3b82f6;
+  color: white;
+}
+
+/* MODAL */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  background: rgba(0,0,0,.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-box {
+  width: min(360px, 100%);
+  background: #111827;
+  border: 1px solid #293548;
+  border-radius: 16px;
+  padding: 15px;
+}
+
+.modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+/* EVENTS */
+
+.event-box {
+  background: #101722;
+  border: 1px solid #263244;
+  border-radius: 10px;
+  padding: 8px;
+  margin-bottom: 7px;
+}
+
+.event-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 7px;
+}
+
+.event-title {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.action-box {
+  border: 1px solid #253247;
+  background: #0b111b;
+  padding: 7px;
+  border-radius: 8px;
+  margin-top: 6px;
+}
+
+.action-box-title {
+  font-size: 10px;
+  color: #64748b;
+  margin-bottom: 5px;
+}
+
+/* TOAST */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 225px;
+  transform: translateX(-50%) translateY(15px);
+  z-index: 9000;
+  background: #e5e7eb;
+  color: #111827;
+  padding: 9px 13px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: .2s;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* PREVIEW MODE */
+
+.preview-mode .canvas-element {
+  outline: none !important;
+}
+
+.preview-mode .canvas-element:hover {
+  outline: none !important;
+}
+
+.preview-mode .phone {
+  box-shadow:
+    0 25px 80px rgba(37,99,235,.2);
+}
+
+/* SCREEN TRANSITION */
+
+.screen-changing {
+  animation: screenChange .18s ease;
+}
+
+@keyframes screenChange {
+  0% {
+    opacity: .2;
+    transform: translateX(20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* EMPTY */
+
+.empty {
+  color: #64748b;
+  font-size: 11px;
+  padding: 10px 2px;
+}
+
+/* RESPONSIVE */
+
+@media (max-height: 700px) {
+
+  .phone {
+    height: 650px;
+  }
+
+  .workspace {
+    padding-bottom: 205px;
+  }
+
+  .panel-content {
+    height: 145px;
+  }
+
+}
+
+@media (max-width: 700px) {
+
+  .workspace {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .phone {
+    width: 100%;
+    min-width: 0;
+    border-radius: 8px;
+  }
+
+  .top-btn {
+    padding: 7px 8px;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+
+    <div class="logo">
+      <div class="logo-icon">D</div>
+      <span>DevOS Studio</span>
+    </div>
+
+    <div class="top-actions">
+
+      <button class="top-btn" onclick="undo()">
+        ↶
+      </button>
+
+      <button class="top-btn" onclick="redo()">
+        ↷
+      </button>
+
+      <button class="top-btn" onclick="saveProject()">
+        💾
+      </button>
+
+      <button class="top-btn" onclick="exportProject()">
+        JSON
+      </button>
+
+      <button
+        id="previewButton"
+        class="top-btn primary"
+        onclick="togglePreview()"
+      >
+        ▶ Önizle
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- WORKSPACE -->
+
+  <main class="workspace">
+
+    <div class="phone">
+
+      <div
+        id="phoneScreen"
+        class="phone-screen"
+      >
+
+        <div class="statusbar">
+          <span id="statusTime">12:00</span>
+          <span>▮▮▮  WiFi  🔋</span>
+        </div>
+
+        <div id="canvas"></div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<!-- BOTTOM PANEL -->
+
+<div
+  id="bottomPanel"
+  class="bottom-panel"
+>
+
+  <button
+    id="panelToggle"
+    class="panel-toggle"
+    onclick="toggleBottomPanel()"
+    aria-label="Paneli aç/kapat"
+  >
+    ▼
+  </button>
+
+  <div class="tabs">
+
+    <button
+      class="tab active"
+      data-tab="screens"
+      onclick="openTab('screens')"
+    >
+      Ekranlar
+    </button>
+
+    <button
+      class="tab"
+      data-tab="add"
+      onclick="openTab('add')"
+    >
+      ＋ Ekle
+    </button>
+
+    <button
+      class="tab"
+      data-tab="edit"
+      onclick="openTab('edit')"
+    >
+      Düzenle
+    </button>
+
+    <button
+      class="tab"
+      data-tab="events"
+      onclick="openTab('events')"
+    >
+      Events
+    </button>
+
+  </div>
+
+  <div
+    id="panelContent"
+    class="panel-content"
+  ></div>
+
+</div>
+
+
+<!-- SCREEN MODAL -->
+
+<div
+  id="screenModal"
+  class="modal"
+>
+
+  <div class="modal-box">
+
+    <div class="modal-title">
+      Yeni ekran
+    </div>
+
+    <div class="field">
+      <label>Ekran adı</label>
+
+      <input
+        id="newScreenName"
+        placeholder="Örn: About"
+      >
+    </div>
+
+    <div class="action-row">
+
+      <button
+        class="action-btn"
+        onclick="closeScreenModal()"
+      >
+        İptal
+      </button>
+
+      <button
+        class="action-btn primary"
+        onclick="createScreen()"
+      >
+        Oluştur
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- HIDDEN FILE INPUT -->
+
+<input
+  id="imageFile"
+  type="file"
+  accept="image/*"
+  hidden
+>
+
+
+<!-- TOAST -->
+
+<div
+  id="toast"
+  class="toast"
+>
+  Kaydedildi
+</div>
+
+
+<script>
+
+/* =========================================================
+   PROJECT DATA
+========================================================= */
+
+let project = {
+  name: "DevOS Project",
+
+  currentScreen: "Home",
+
+  screens: [
+    {
+      id: "Home",
+      name: "Home",
+
+      background: "#111827",
+
+      elements: [
+
+        {
+          id: "title_01",
+          type: "text",
+
+          x: 20,
+          y: 70,
+          w: 300,
+          h: 45,
+
+          text: "DevOS",
+
+          color: "#ffffff",
+          fontSize: 28,
+
+          events: []
+        },
+
+        {
+          id: "subtitle_01",
+          type: "text",
+
+          x: 20,
+          y: 120,
+          w: 300,
+          h: 35,
+
+          text: "Mobile OS Studio",
+
+          color: "#94a3b8",
+          fontSize: 14,
+
+          events: []
+        },
+
+        {
+          id: "settings_button",
+          type: "button",
+
+          x: 20,
+          y: 190,
+          w: 160,
+          h: 50,
+
+          text: "Ayarlar",
+
+          color: "#ffffff",
+          background: "#2563eb",
+
+          fontSize: 14,
+          radius: 12,
+
+          image: "",
+          imagePosition: "left",
+          imageSize: 24,
+
+          events: [
+            {
+              trigger: "click",
+
+              actions: [
+                {
+                  type: "navigate",
+                  screen: "Settings"
+                }
+              ]
+            }
+          ]
+        },
+
+        {
+          id: "hello_button",
+          type: "button",
+
+          x: 20,
+          y: 255,
+          w: 160,
+          h: 50,
+
+          text: "Merhaba",
+
+          color: "#ffffff",
+          background: "#16a34a",
+
+          fontSize: 14,
+          radius: 12,
+
+          image: "",
+          imagePosition: "left",
+          imageSize: 24,
+
+          events: [
+            {
+              trigger: "click",
+
+              actions: [
+                {
+                  type: "setText",
+                  target: "title_01",
+                  value: "Merhaba!"
+                }
+              ]
+            }
+          ]
+        }
+
+      ]
+    },
+
+    {
+      id: "Settings",
+      name: "Settings",
+
+      background: "#0f172a",
+
+      elements: [
+
+        {
+          id: "settings_title",
+          type: "text",
+
+          x: 20,
+          y: 70,
+          w: 300,
+          h: 45,
+
+          text: "Ayarlar",
+
+          color: "#ffffff",
+          fontSize: 25,
+
+          events: []
+        },
+
+        {
+          id: "back_button",
+          type: "button",
+
+          x: 20,
+          y: 140,
+          w: 150,
+          h: 50,
+
+          text: "Geri",
+
+          color: "#ffffff",
+          background: "#475569",
+
+          fontSize: 14,
+          radius: 12,
+
+          image: "",
+          imagePosition: "left",
+          imageSize: 24,
+
+          events: [
+            {
+              trigger: "click",
+
+              actions: [
+                {
+                  type: "navigate",
+                  screen: "Home"
+                }
+              ]
+            }
+          ]
+        }
+
+      ]
+    }
+  ]
+};
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let selectedElement = null;
+
+let previewMode = false;
+
+let history = [];
+
+let historyIndex = -1;
+
+let clipboard = null;
+
+
+/* =========================================================
+   SPINNER TIMER STATE
+========================================================= */
+
+const spinnerTimers = {};
+
+
+/* =========================================================
+   PANEL STATE
+========================================================= */
+
+let bottomPanelOpen = true;
+
+
+/* =========================================================
+   INIT
+========================================================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  loadProject();
+
+  pushHistory();
+
+  render();
+
+  updateTime();
+
+  setInterval(updateTime, 30000);
+
+});
+
+
+/* =========================================================
+   BOTTOM PANEL TOGGLE
+========================================================= */
+
+function toggleBottomPanel() {
+
+  const panel =
+    document.getElementById(
+      "bottomPanel"
+    );
+
+  const toggle =
+    document.getElementById(
+      "panelToggle"
+    );
+
+
+  bottomPanelOpen =
+    !bottomPanelOpen;
+
+
+  panel.classList.toggle(
+    "collapsed",
+    !bottomPanelOpen
+  );
+
+
+  toggle.textContent =
+    bottomPanelOpen
+      ? "▼"
+      : "▲";
+
+}
+
+
+/* =========================================================
+   CURRENT SCREEN
+========================================================= */
+
+function getCurrentScreen() {
+
+  return project.screens.find(
+    screen => screen.id === project.currentScreen
+  );
+
+}
+
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+function render() {
+
+  renderCanvas();
+
+  renderPanel();
+
+}
+
+
+/* =========================================================
+   CANVAS
+========================================================= */
+
+function renderCanvas() {
+
+  const screen = getCurrentScreen();
+
+  const canvas = document.getElementById("canvas");
+
+  const phoneScreen =
+    document.getElementById("phoneScreen");
+
+  canvas.innerHTML = "";
+
+  phoneScreen.style.background =
+    screen.background || "#111827";
+
+
+  screen.elements.forEach(element => {
+
+    const node =
+      createElementNode(element);
+
+    canvas.appendChild(node);
+
+  });
+
+}
+
+
+/* =========================================================
+   LIQUID GLASS HELPERS
+========================================================= */
+
+function hexToRgba(
+  hex,
+  alpha
+) {
+
+  hex =
+    String(hex || "#ffffff")
+      .replace("#", "");
+
+  if (hex.length === 3) {
+
+    hex =
+      hex
+        .split("")
+        .map(value => value + value)
+        .join("");
+
+  }
+
+  const number =
+    parseInt(hex, 16);
+
+  const r =
+    (number >> 16) & 255;
+
+  const g =
+    (number >> 8) & 255;
+
+  const b =
+    number & 255;
+
+  return `
+    rgba(
+      ${r},
+      ${g},
+      ${b},
+      ${Math.max(
+        0,
+        Math.min(
+          100,
+          Number(alpha ?? 18)
+        )
+      ) / 100}
+    )
+  `;
+
+}
+
+
+function applyLiquidGlassStyles(
+  node,
+  element
+) {
+
+  node.style.background =
+    hexToRgba(
+      element.glassColor || "#ffffff",
+      element.glassOpacity ?? 18
+    );
+
+  node.style.color =
+    element.color || "#ffffff";
+
+  node.style.fontSize =
+    (element.fontSize || 14) + "px";
+
+  node.style.borderRadius =
+    (element.radius ?? 18) + "px";
+
+  node.style.border =
+    `${element.borderWidth ?? 1}px solid ${
+      hexToRgba(
+        element.borderColor || "#ffffff",
+        element.borderOpacity ?? 22
+      )
+    }`;
+
+  node.style.backdropFilter =
+    `blur(${element.blur ?? 18}px) saturate(${element.saturation ?? 150}%)`;
+
+  node.style.webkitBackdropFilter =
+    `blur(${element.blur ?? 18}px) saturate(${element.saturation ?? 150}%)`;
+
+  const shadow =
+    Math.max(
+      0,
+      Math.min(
+        100,
+        Number(
+          element.shadow ?? 18
+        )
+      )
+    );
+
+  node.style.boxShadow =
+    `
+      inset 0 1px 0 rgba(255,255,255,.22),
+      0 ${Math.round(shadow / 2)}px ${Math.round(
+        12 + shadow
+      )}px rgba(0,0,0,${shadow / 100})
+    `;
+
+}
+
+
+/* =========================================================
+   SPINNER TIMER
+========================================================= */
+
+function startSpinnerTimer(element) {
+
+  if (
+    !previewMode ||
+    element.type !== "spinner"
+  ) {
+
+    return;
+
+  }
+
+
+  const seconds =
+    Number(
+      element.autoHideSeconds ?? 0
+    );
+
+
+  if (
+    !seconds ||
+    seconds <= 0
+  ) {
+
+    return;
+
+  }
+
+
+  clearTimeout(
+    spinnerTimers[element.id]
+  );
+
+
+  spinnerTimers[element.id] =
+    setTimeout(
+      () => {
+
+        element.hidden =
+          true;
+
+        delete spinnerTimers[element.id];
+
+        renderCanvas();
+
+      },
+      seconds * 1000
+    );
+
+}
+
+
+/* =========================================================
+   CREATE ELEMENT NODE
+========================================================= */
+
+function createElementNode(element) {
+
+  const node =
+    document.createElement("div");
+
+  node.className =
+    "canvas-element";
+
+  node.dataset.id =
+    element.id;
+
+  node.style.left =
+    element.x + "px";
+
+  node.style.top =
+    element.y + "px";
+
+  node.style.width =
+    element.w + "px";
+
+  node.style.height =
+    element.h + "px";
+
+
+  if (
+    selectedElement &&
+    selectedElement.id === element.id &&
+    !previewMode
+  ) {
+
+    node.classList.add(
+      "editor-selected"
+    );
+
+  }
+
+
+  /* TEXT */
+
+  if (element.type === "text") {
+
+    node.classList.add("el-text");
+
+    node.textContent =
+      element.text || "";
+
+    node.style.color =
+      element.color || "#ffffff";
+
+    node.style.fontSize =
+      (element.fontSize || 16) + "px";
+
+  }
+
+
+  /* HEADING */
+
+  else if (element.type === "heading") {
+
+    node.classList.add("el-heading");
+
+    node.textContent =
+      element.text || "Başlık";
+
+    node.style.color =
+      element.color || "#ffffff";
+
+    node.style.fontSize =
+      (element.fontSize || 24) + "px";
+
+  }
+
+
+  /* LABEL */
+
+  else if (element.type === "label") {
+
+    node.classList.add("el-label");
+
+    node.textContent =
+      element.text || "Etiket";
+
+    node.style.color =
+      element.color || "#cbd5e1";
+
+    node.style.fontSize =
+      (element.fontSize || 12) + "px";
+
+  }
+
+
+  /* BUTTON */
+
+  else if (element.type === "button") {
+
+    node.classList.add("el-button");
+
+    node.style.background =
+      element.background || "#2563eb";
+
+    node.style.color =
+      element.color || "#ffffff";
+
+    node.style.fontSize =
+      (element.fontSize || 14) + "px";
+
+    node.style.borderRadius =
+      (element.radius || 10) + "px";
+
+
+    const image =
+      element.image || "";
+
+    const text =
+      element.text || "";
+
+
+    if (image) {
+
+      const img =
+        document.createElement("img");
+
+      img.src = image;
+
+      img.draggable = false;
+
+      img.style.width =
+        (element.imageSize || 24) + "px";
+
+      img.style.height =
+        (element.imageSize || 24) + "px";
+
+
+      if (
+        element.imagePosition === "top"
+      ) {
+
+        node.classList.add(
+          "image-top"
+        );
+
+        node.appendChild(img);
+
+        const span =
+          document.createElement("span");
+
+        span.textContent = text;
+
+        node.appendChild(span);
+
+      }
+
+      else if (
+        element.imagePosition === "right"
+      ) {
+
+        node.style.flexDirection =
+          "row-reverse";
+
+        node.appendChild(img);
+
+        const span =
+          document.createElement("span");
+
+        span.textContent = text;
+
+        node.appendChild(span);
+
+      }
+
+      else if (
+        element.imagePosition === "only"
+      ) {
+
+        node.classList.add(
+          "image-only"
+        );
+
+        node.appendChild(img);
+
+      }
+
+      else {
+
+        node.appendChild(img);
+
+        const span =
+          document.createElement("span");
+
+        span.textContent = text;
+
+        node.appendChild(span);
+
+      }
+
+    }
+
+    else {
+
+      node.textContent =
+        text;
+
+    }
+
+  }
+
+
+  /* INPUT */
+
+  else if (element.type === "input") {
+
+    const input =
+      document.createElement("input");
+
+    input.className =
+      "el-input";
+
+    input.placeholder =
+      element.placeholder || "Metin gir...";
+
+    node.appendChild(input);
+
+  }
+
+
+  /* TEXTAREA */
+
+  else if (element.type === "textarea") {
+
+    const textarea =
+      document.createElement("textarea");
+
+    textarea.className =
+      "el-textarea";
+
+    textarea.placeholder =
+      element.placeholder || "Metin gir...";
+
+    textarea.value =
+      element.text || "";
+
+    node.appendChild(textarea);
+
+  }
+
+
+  /* CHECKBOX */
+
+  else if (element.type === "checkbox") {
+
+    const label =
+      document.createElement("label");
+
+    label.className =
+      "el-checkbox";
+
+    const input =
+      document.createElement("input");
+
+    input.type =
+      "checkbox";
+
+    input.checked =
+      !!element.checked;
+
+    const span =
+      document.createElement("span");
+
+    span.textContent =
+      element.text || "Checkbox";
+
+    label.appendChild(input);
+
+    label.appendChild(span);
+
+    node.appendChild(label);
+
+  }
+
+
+  /* SWITCH */
+
+  else if (element.type === "switch") {
+
+    const switchNode =
+      document.createElement("div");
+
+    switchNode.className =
+      "el-switch";
+
+    if (element.checked) {
+
+      switchNode.classList.add("on");
+
+    }
+
+    const track =
+      document.createElement("div");
+
+    track.className =
+      "el-switch-track";
+
+    const thumb =
+      document.createElement("div");
+
+    thumb.className =
+      "el-switch-thumb";
+
+    track.appendChild(thumb);
+
+    switchNode.appendChild(track);
+
+    node.appendChild(switchNode);
+
+  }
+
+
+  /* RADIO */
+
+  else if (element.type === "radio") {
+
+    const label =
+      document.createElement("label");
+
+    label.className =
+      "el-radio";
+
+    const input =
+      document.createElement("input");
+
+    input.type =
+      "radio";
+
+    input.name =
+      element.group || "radio";
+
+    input.checked =
+      !!element.checked;
+
+    const span =
+      document.createElement("span");
+
+    span.textContent =
+      element.text || "Radio";
+
+    label.appendChild(input);
+
+    label.appendChild(span);
+
+    node.appendChild(label);
+
+  }
+
+
+  /* SLIDER */
+
+  else if (element.type === "slider") {
+
+    const input =
+      document.createElement("input");
+
+    input.type =
+      "range";
+
+    input.className =
+      "el-slider";
+
+    input.min =
+      element.min ?? 0;
+
+    input.max =
+      element.max ?? 100;
+
+    input.value =
+      element.value ?? 50;
+
+    node.appendChild(input);
+
+  }
+
+
+  /* CARD */
+
+  else if (element.type === "card") {
+
+    node.classList.add("el-card");
+
+    node.style.background =
+      element.background || "#1a2230";
+
+  }
+
+
+  /* IMAGE */
+
+  else if (element.type === "image") {
+
+    const img =
+      document.createElement("img");
+
+    img.className =
+      "el-image";
+
+    img.src =
+      element.image || "";
+
+    img.draggable = false;
+
+    node.appendChild(img);
+
+  }
+
+
+  /* PROGRESS */
+
+  else if (element.type === "progress") {
+
+    const wrap =
+      document.createElement("div");
+
+    wrap.className =
+      "el-progress-wrap";
+
+    const progress =
+      document.createElement("div");
+
+    progress.className =
+      "el-progress";
+
+    const bar =
+      document.createElement("div");
+
+    bar.className =
+      "el-progress-bar";
+
+    bar.style.width =
+      (element.value || 50) + "%";
+
+    progress.appendChild(bar);
+
+    wrap.appendChild(progress);
+
+    node.appendChild(wrap);
+
+  }
+
+
+  /* BADGE */
+
+  else if (element.type === "badge") {
+
+    node.classList.add("el-badge");
+
+    node.textContent =
+      element.text || "Badge";
+
+    node.style.background =
+      element.background || "#2563eb";
+
+  }
+
+
+  /* DIVIDER */
+
+  else if (element.type === "divider") {
+
+    node.classList.add("el-divider");
+
+    const line =
+      document.createElement("div");
+
+    line.className =
+      "el-divider-line";
+
+    node.appendChild(line);
+
+  }
+
+
+  /* AVATAR */
+
+  else if (element.type === "avatar") {
+
+    node.classList.add("el-avatar");
+
+    if (element.image) {
+
+      const img =
+        document.createElement("img");
+
+      img.src =
+        element.image;
+
+      node.appendChild(img);
+
+    }
+
+    else {
+
+      node.textContent =
+        element.text || "A";
+
+    }
+
+  }
+
+
+  /* SPINNER */
+
+  else if (element.type === "spinner") {
+
+    node.classList.add("el-spinner");
+
+    const spinner =
+      document.createElement("div");
+
+    spinner.className =
+      "el-spinner-circle";
+
+    node.appendChild(spinner);
+
+
+    startSpinnerTimer(
+      element
+    );
+
+  }
+
+
+  /* LIST */
+
+  else if (element.type === "list") {
+
+    node.classList.add("el-list");
+
+    const items =
+      element.items ||
+      [
+        "Liste öğesi 1",
+        "Liste öğesi 2",
+        "Liste öğesi 3"
+      ];
+
+    items.forEach(item => {
+
+      const row =
+        document.createElement("div");
+
+      row.className =
+        "el-list-item";
+
+      row.textContent =
+        item;
+
+      node.appendChild(row);
+
+    });
+
+  }
+
+
+  /* SCROLLVIEW */
+
+  else if (element.type === "scrollview") {
+
+    node.classList.add("el-scrollview");
+
+    node.textContent =
+      element.text ||
+      "ScrollView içeriği";
+
+  }
+
+
+  /* MODAL */
+
+  else if (element.type === "modal") {
+
+    node.classList.add("el-modal");
+
+    const box =
+      document.createElement("div");
+
+    box.className =
+      "el-modal-box";
+
+    box.textContent =
+      element.text ||
+      "Modal";
+
+    node.appendChild(box);
+
+  }
+
+
+  /* DROPDOWN */
+
+  else if (element.type === "dropdown") {
+
+    const select =
+      document.createElement("select");
+
+    select.className =
+      "el-dropdown";
+
+    const items =
+      element.items ||
+      [
+        "Seçenek 1",
+        "Seçenek 2",
+        "Seçenek 3"
+      ];
+
+    items.forEach(item => {
+
+      const option =
+        document.createElement("option");
+
+      option.textContent =
+        item;
+
+      option.value =
+        item;
+
+      select.appendChild(option);
+
+    });
+
+    node.appendChild(select);
+
+  }
+
+
+  /* VIDEO */
+
+  else if (element.type === "video") {
+
+    const video =
+      document.createElement("video");
+
+    video.className =
+      "el-video";
+
+    video.src =
+      element.source || "";
+
+    video.controls =
+      true;
+
+    node.appendChild(video);
+
+  }
+
+
+  /* AUDIO */
+
+  else if (element.type === "audio") {
+
+    const audio =
+      document.createElement("audio");
+
+    audio.className =
+      "el-audio";
+
+    audio.src =
+      element.source || "";
+
+    audio.controls =
+      true;
+
+    node.appendChild(audio);
+
+  }
+
+
+  /* NAV */
+
+  else if (element.type === "nav") {
+
+    node.classList.add("el-nav");
+
+    node.innerHTML =
+      "⌂ &nbsp;&nbsp;&nbsp; Apps &nbsp;&nbsp;&nbsp; ⚙";
+
+  }
+
+
+  /* SIDEBAR */
+
+  else if (element.type === "sidebar") {
+
+    node.classList.add("el-sidebar");
+
+    node.textContent =
+      element.text ||
+      "☰\n\nAna Sayfa\n\nUygulamalar\n\nAyarlar";
+
+    node.style.whiteSpace =
+      "pre-line";
+
+  }
+
+
+  /* TABBAR */
+
+  else if (element.type === "tabbar") {
+
+    node.classList.add("el-tabbar");
+
+    node.innerHTML =
+      "⌂ Ana Sayfa &nbsp;&nbsp; ◉ Uygulamalar &nbsp;&nbsp; ⚙ Ayarlar";
+
+  }
+
+
+  /* TERMINAL */
+
+  else if (element.type === "terminal") {
+
+    node.classList.add("el-terminal");
+
+    node.textContent =
+      element.text ||
+      "$ devos\n$ ready...";
+
+  }
+
+
+  /* =======================================================
+     LIQUID GLASS PANEL
+  ======================================================= */
+
+  else if (
+    element.type === "liquidGlass"
+  ) {
+
+    node.classList.add(
+      "el-liquid-glass"
+    );
+
+    node.textContent =
+      element.text ||
+      "Liquid Glass";
+
+    applyLiquidGlassStyles(
+      node,
+      element
+    );
+
+  }
+
+
+  /* =======================================================
+     LIQUID GLASS BUTTON
+  ======================================================= */
+
+  else if (
+    element.type === "liquidGlassButton"
+  ) {
+
+    node.classList.add(
+      "el-liquid-glass-button"
+    );
+
+    node.textContent =
+      element.text ||
+      "Glass Button";
+
+    applyLiquidGlassStyles(
+      node,
+      element
+    );
+
+  }
+
+
+  /* =======================================================
+     LIQUID GLASS CARD
+  ======================================================= */
+
+  else if (
+    element.type === "liquidGlassCard"
+  ) {
+
+    node.classList.add(
+      "el-liquid-glass-card"
+    );
+
+    node.textContent =
+      element.text ||
+      "Glass Card";
+
+    applyLiquidGlassStyles(
+      node,
+      element
+    );
+
+  }
+
+
+  /* =======================================================
+     LIQUID GLASS NAV
+  ======================================================= */
+
+  else if (
+    element.type === "liquidGlassNav"
+  ) {
+
+    node.classList.add(
+      "el-liquid-glass-nav"
+    );
+
+    node.textContent =
+      element.text ||
+      "⌂  Ana Sayfa    Apps    ⚙ Ayarlar";
+
+    applyLiquidGlassStyles(
+      node,
+      element
+    );
+
+  }
+
+
+  /* =======================================================
+     LIQUID GLASS TABBAR
+  ======================================================= */
+
+  else if (
+    element.type === "liquidGlassTabbar"
+  ) {
+
+    node.classList.add(
+      "el-liquid-glass-tabbar"
+    );
+
+    node.textContent =
+      element.text ||
+      "⌂ Ana Sayfa    ◉ Uygulamalar    ⚙ Ayarlar";
+
+    applyLiquidGlassStyles(
+      node,
+      element
+    );
+
+  }
+
+
+  /* =======================================================
+     LIQUID GLASS MODAL
+  ======================================================= */
+
+  else if (
+    element.type === "liquidGlassModal"
+  ) {
+
+    node.classList.add(
+      "el-liquid-glass-modal"
+    );
+
+    node.textContent =
+      element.text ||
+      "Glass Modal";
+
+    applyLiquidGlassStyles(
+      node,
+      element
+    );
+
+  }
+
+
+  /* EVENTS */
+
+  if (previewMode) {
+
+    node.addEventListener(
+      "click",
+      event => {
+
+        event.stopPropagation();
+
+        runEvent(
+          element,
+          "click"
+        );
+
+      }
+    );
+
+
+    node.addEventListener(
+      "dblclick",
+      event => {
+
+        event.stopPropagation();
+
+        runEvent(
+          element,
+          "doubleclick"
+        );
+
+      }
+    );
+
+  }
+
+  else {
+
+    node.addEventListener(
+      "click",
+      event => {
+
+        event.stopPropagation();
+
+        selectElement(
+          element.id
+        );
+
+      }
+    );
+
+  }
+
+
+  return node;
+
+}
+
+
+/* =========================================================
+   SELECT
+========================================================= */
+
+function selectElement(id) {
+
+  const screen =
+    getCurrentScreen();
+
+  selectedElement =
+    screen.elements.find(
+      element => element.id === id
+    );
+
+  openTab("edit");
+
+  render();
+
+}
+
+
+/* =========================================================
+   PANEL
+========================================================= */
+
+let activeTab = "screens";
+
+
+function openTab(tab) {
+
+  activeTab = tab;
+
+  document
+    .querySelectorAll(".tab")
+    .forEach(button => {
+
+      button.classList.toggle(
+        "active",
+        button.dataset.tab === tab
+      );
+
+    });
+
+  renderPanel();
+
+}
+
+
+/* =========================================================
+   RENDER PANEL
+========================================================= */
+
+function renderPanel() {
+
+  const panel =
+    document.getElementById(
+      "panelContent"
+    );
+
+  if (activeTab === "screens") {
+
+    panel.innerHTML =
+      renderScreensPanel();
+
+  }
+
+  else if (activeTab === "add") {
+
+    panel.innerHTML =
+      renderAddPanel();
+
+  }
+
+  else if (activeTab === "edit") {
+
+    panel.innerHTML =
+      renderEditPanel();
+
+  }
+
+  else if (activeTab === "events") {
+
+    panel.innerHTML =
+      renderEventsPanel();
+
+  }
+
+}
+
+
+/* =========================================================
+   SCREENS PANEL
+========================================================= */
+
+function renderScreensPanel() {
+
+  let html = `
+    <div class="screen-list">
+  `;
+
+
+  project.screens.forEach(screen => {
+
+    html += `
+      <button
+        class="screen-item ${
+          screen.id === project.currentScreen
+            ? "active"
+            : ""
+        }"
+        onclick="switchScreen('${escapeAttr(screen.id)}')"
+      >
+        📱 ${escapeHtml(screen.name)}
+      </button>
+    `;
+
+  });
+
+
+  html += `
+      <button
+        class="screen-item add-screen"
+        onclick="openScreenModal()"
+      >
+        ＋ Yeni
+      </button>
+    </div>
+  `;
+
+
+  return html;
+
+}
+
+
+/* =========================================================
+   ADD PANEL
+========================================================= */
+
+function renderAddPanel() {
+
+  return `
+
+    <div class="element-list">
+
+      <button
+        class="element-item"
+        onclick="addElement('text')"
+      >
+        T Metin
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('heading')"
+      >
+        H Başlık
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('label')"
+      >
+        L Label
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('button')"
+      >
+        ▣ Buton
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('input')"
+      >
+        □ Input
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('textarea')"
+      >
+        ▤ Textarea
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('checkbox')"
+      >
+        ☑ Checkbox
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('switch')"
+      >
+        ◉ Switch
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('radio')"
+      >
+        ◉ Radio
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('slider')"
+      >
+        ━ Slider
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('card')"
+      >
+        ▭ Card
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('badge')"
+      >
+        ● Badge
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('progress')"
+      >
+        ▰ Progress
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('divider')"
+      >
+        ─ Divider
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('avatar')"
+      >
+        ● Avatar
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('spinner')"
+      >
+        ◌ Spinner
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('list')"
+      >
+        ☷ List
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('scrollview')"
+      >
+        ⇅ ScrollView
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('dropdown')"
+      >
+        ▼ Dropdown
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('modal')"
+      >
+        ▣ Modal
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('image')"
+      >
+        🖼 Resim
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('video')"
+      >
+        ▶ Video
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('audio')"
+      >
+        ♪ Audio
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('nav')"
+      >
+        ≡ Nav
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('sidebar')"
+      >
+        ☰ Sidebar
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('tabbar')"
+      >
+        ▤ Tabbar
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('terminal')"
+      >
+        >_ Terminal
+      </button>
+
+
+      <!-- LIQUID GLASS -->
+
+      <button
+        class="element-item"
+        onclick="addElement('liquidGlass')"
+      >
+        ◇ Glass Panel
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('liquidGlassButton')"
+      >
+        ◇ Glass Button
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('liquidGlassCard')"
+      >
+        ◇ Glass Card
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('liquidGlassNav')"
+      >
+        ≡ Glass Nav
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('liquidGlassTabbar')"
+      >
+        ▤ Glass Tabbar
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('liquidGlassModal')"
+      >
+        ▣ Glass Modal
+      </button>
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================================================
+   EDIT PANEL
+========================================================= */
+
+function renderEditPanel() {
+
+  if (!selectedElement) {
+
+    return `
+      <div class="empty">
+        Bir element seç.
+      </div>
+    `;
+
+  }
+
+
+  const e =
+    selectedElement;
+
+
+  let html = `
+
+    <div class="form-grid">
+
+      <div class="field">
+        <label>X</label>
+        <input
+          type="number"
+          value="${e.x}"
+          onchange="updateSelected('x', this.value)"
+        >
+      </div>
+
+      <div class="field">
+        <label>Y</label>
+        <input
+          type="number"
+          value="${e.y}"
+          onchange="updateSelected('y', this.value)"
+        >
+      </div>
+
+      <div class="field">
+        <label>Genişlik</label>
+        <input
+          type="number"
+          value="${e.w}"
+          onchange="updateSelected('w', this.value)"
+        >
+      </div>
+
+      <div class="field">
+        <label>Yükseklik</label>
+        <input
+          type="number"
+          value="${e.h}"
+          onchange="updateSelected('h', this.value)"
+        >
+      </div>
+
+  `;
+
+
+  if (
+    e.type === "text" ||
+    e.type === "heading" ||
+    e.type === "label" ||
+    e.type === "button" ||
+    e.type === "terminal" ||
+    e.type === "textarea" ||
+    e.type === "badge" ||
+    e.type === "avatar" ||
+    e.type === "scrollview" ||
+    e.type === "modal" ||
+    e.type === "sidebar" ||
+    e.type === "liquidGlass" ||
+    e.type === "liquidGlassButton" ||
+    e.type === "liquidGlassCard" ||
+    e.type === "liquidGlassNav" ||
+    e.type === "liquidGlassTabbar" ||
+    e.type === "liquidGlassModal"
+  ) {
+
+    html += `
+
+      <div class="field full">
+        <label>Metin</label>
+
+        <input
+          value="${escapeAttr(e.text || "")}"
+          onchange="updateSelected('text', this.value)"
+        >
+      </div>
+
+    `;
+
+  }
+
+
+  if (
+    e.type === "text" ||
+    e.type === "heading" ||
+    e.type === "label" ||
+    e.type === "button" ||
+    e.type === "badge"
+  ) {
+
+    html += `
+
+      <div class="field">
+        <label>Yazı rengi</label>
+
+        <input
+          type="color"
+          value="${e.color || "#ffffff"}"
+          onchange="updateSelected('color', this.value)"
+        >
+      </div>
+
+      <div class="field">
+        <label>Font</label>
+
+        <input
+          type="number"
+          value="${e.fontSize || 14}"
+          onchange="updateSelected('fontSize', this.value)"
+        >
+      </div>
+
+    `;
+
+  }
+
+
+  /* LIQUID GLASS AYARLARI */
+
+  if (
+    e.type === "liquidGlass" ||
+    e.type === "liquidGlassButton" ||
+    e.type === "liquidGlassCard" ||
+    e.type === "liquidGlassNav" ||
+    e.type === "liquidGlassTabbar" ||
+    e.type === "liquidGlassModal"
+  ) {
+
+    html += `
+
+      <div class="field">
+        <label>Yazı rengi</label>
+
+        <input
+          type="color"
+          value="${e.color || "#ffffff"}"
+          onchange="updateSelected('color', this.value)"
+        >
+      </div>
+
+      <div class="field">
+        <label>Font boyutu</label>
+
+        <input
+          type="number"
+          min="1"
+          value="${e.fontSize || 14}"
+          onchange="updateSelected('fontSize', this.value)"
+        >
+      </div>
+
+      <div class="field">
+        <label>Cam rengi</label>
+
+        <input
+          type="color"
+          value="${e.glassColor || "#ffffff"}"
+          onchange="updateSelected('glassColor', this.value)"
+        >
+      </div>
+
+      <div class="field">
+        <label>Şeffaflık %</label>
+
+        <input
+          type="number"
+          min="0"
+          max="100"
+          value="${e.glassOpacity ?? 18}"
+          onchange="updateSelected('glassOpacity', this.value)"
+        >
+      </div>
+
+      <div class="field">
+        <label>Blur</label>
+
+        <input
+          type="number"
+          min="0"
+          max="100"
+          value="${e.blur ?? 18}"
+          onchange="updateSelected('blur', this.value)"
+        >
+      </div>
+
+      <div class="field">
+        <label>Saturation %</label>
+
+        <input
+          type="number"
+          min="0"
+          max="300"
+          value="${e.saturation ?? 150}"
+          onchange="updateSelected('saturation', this.value)"
+        >
+      </div>
+
+      <div class="field">
+        <label>Köşe</label>
+
+        <input
+          type="number"
+          min="0"
+          value="${e.radius ?? 18}"
+          onchange="updateSelected('radius', this.value)"
+        >
+      </div>
+
+      <div class="field">
+        <label>Kenarlık kalınlığı</label>
+
+        <input
+          type="number"
+          min="0"
+          max="10"
+          value="${e.borderWidth ?? 1}"
+          onchange="updateSelected('borderWidth', this.value)"
+        >
+      </div>
+
+      <div class="field">
+        <label>Kenarlık rengi</label>
+
+        <input
+          type="color"
+          value="${e.borderColor || "#ffffff"}"
+          onchange="updateSelected('borderColor', this.value)"
+        >
+      </div>
+
+      <div class="field">
+        <label>Kenarlık şeffaflığı %</label>
+
+        <input
+          type="number"
+          min="0"
+          max="100"
+          value="${e.borderOpacity ?? 22}"
+          onchange="updateSelected('borderOpacity', this.value)"
+        >
+      </div>
+
+      <div class="field full">
+        <label>Gölge %</label>
+
+        <input
+          type="number"
+          min="0"
+          max="100"
+          value="${e.shadow ?? 18}"
+          onchange="updateSelected('shadow', this.value)"
+        >
+      </div>
+
+    `;
+
+  }
+
+
+  /* SPINNER AYARLARI */
+
+  if (
+    e.type === "spinner"
+  ) {
+
+    html += `
+
+      <div class="field full">
+
+        <label>Kaybolma süresi (saniye)</label>
+
+        <input
+          type="number"
+          min="0"
+          step="0.1"
+          value="${e.autoHideSeconds ?? 0}"
+          onchange="updateSelected('autoHideSeconds', this.value)"
+          placeholder="0 = sınırsız"
+        >
+
+      </div>
+
+    `;
+
+  }
+
+
+  if (
+    e.type === "button" ||
+    e.type === "badge"
+  ) {
+
+    html += `
+
+      <div class="field">
+        <label>Arka plan</label>
+
+        <input
+          type="color"
+          value="${e.background || "#2563eb"}"
+          onchange="updateSelected('background', this.value)"
+        >
+      </div>
+
+    `;
+
+  }
+
+
+  if (e.type === "button") {
+
+    html += `
+
+      <div class="field">
+        <label>Köşe</label>
+
+        <input
+          type="number"
+          value="${e.radius || 10}"
+          onchange="updateSelected('radius', this.value)"
+        >
+      </div>
+
+      <div class="field full">
+
+        <label>Buton resmi</label>
+
+        <button
+          class="secondary-btn"
+          onclick="selectImageFromDevice()"
+        >
+          📷 Cihazdan resim seç
+        </button>
+
+        <div
+          id="imagePreview"
+          class="image-preview"
+        ></div>
+
+        <button
+          class="danger-btn"
+          onclick="removeElementImage()"
+          style="${
+            e.image
+              ? ""
+              : "display:none;"
+          }"
+        >
+          🗑 Resmi kaldır
+        </button>
+
+      </div>
+
+      <div class="field">
+
+        <label>Resim konumu</label>
+
+        <select
+          onchange="updateSelected('imagePosition', this.value)"
+        >
+
+          <option
+            value="left"
+            ${
+              e.imagePosition === "left"
+                ? "selected"
+                : ""
+            }
+          >
+            Sol
+          </option>
+
+          <option
+            value="right"
+            ${
+              e.imagePosition === "right"
+                ? "selected"
+                : ""
+            }
+          >
+            Sağ
+          </option>
+
+          <option
+            value="top"
+            ${
+              e.imagePosition === "top"
+                ? "selected"
+                : ""
+            }
+          >
+            Üst
+          </option>
+
+          <option
+            value="only"
+            ${
+              e.imagePosition === "only"
+                ? "selected"
+                : ""
+            }
+          >
+            Sadece resim
+          </option>
+
+        </select>
+
+      </div>
+
+      <div class="field">
+
+        <label>Resim boyutu</label>
+
+        <input
+          type="number"
+          value="${e.imageSize || 24}"
+          onchange="updateSelected('imageSize', this.value)"
+        >
+
+      </div>
+
+    `;
+
+  }
+
+
+  if (e.type === "image") {
+
+    html += `
+
+      <div class="field full">
+
+        <label>Resim</label>
+
+        <button
+          class="secondary-btn"
+          onclick="selectImageFromDevice()"
+        >
+          📷 Cihazdan resim seç
+        </button>
+
+        <div
+          id="imagePreview"
+          class="image-preview"
+        ></div>
+
+        <button
+          class="danger-btn"
+          onclick="removeElementImage()"
+          style="${
+            e.image
+              ? ""
+              : "display:none;"
+          }"
+        >
+          🗑 Resmi kaldır
+        </button>
+
+      </div>
+
+    `;
+
+  }
+
+
+  if (e.type === "avatar") {
+
+    html += `
+
+      <div class="field full">
+
+        <label>Avatar resmi</label>
+
+        <button
+          class="secondary-btn"
+          onclick="selectImageFromDevice()"
+        >
+          📷 Cihazdan resim seç
+        </button>
+
+        <div
+          id="imagePreview"
+          class="image-preview"
+        ></div>
+
+        <button
+          class="danger-btn"
+          onclick="removeElementImage()"
+          style="${
+            e.image
+              ? ""
+              : "display:none;"
+          }"
+        >
+          🗑 Resmi kaldır
+        </button>
+
+      </div>
+
+    `;
+
+  }
+
+
+  if (
+    e.type === "input" ||
+    e.type === "textarea"
+  ) {
+
+    html += `
+
+      <div class="field full">
+
+        <label>Placeholder</label>
+
+        <input
+          value="${escapeAttr(e.placeholder || "")}"
+          onchange="updateSelected('placeholder', this.value)"
+        >
+
+      </div>
+
+    `;
+
+  }
+
+
+  if (
+    e.type === "checkbox" ||
+    e.type === "switch" ||
+    e.type === "radio"
+  ) {
+
+    html += `
+
+      <div class="field">
+
+        <label>Durum</label>
+
+        <select
+          onchange="updateSelected('checked', this.value === 'true')"
+        >
+
+          <option
+            value="false"
+            ${
+              !e.checked
+                ? "selected"
+                : ""
+            }
+          >
+            Kapalı
+          </option>
+
+          <option
+            value="true"
+            ${
+              e.checked
+                ? "selected"
+                : ""
+            }
+          >
+            Açık
+          </option>
+
+        </select>
+
+      </div>
+
+    `;
+
+  }
+
+
+  if (e.type === "radio") {
+
+    html += `
+
+      <div class="field">
+
+        <label>Grup</label>
+
+        <input
+          value="${escapeAttr(e.group || "radio")}"
+          onchange="updateSelected('group', this.value)"
+        >
+
+      </div>
+
+    `;
+
+  }
+
+
+  if (e.type === "slider") {
+
+    html += `
+
+      <div class="field">
+        <label>Min</label>
+
+        <input
+          type="number"
+          value="${e.min ?? 0}"
+          onchange="updateSelected('min', this.value)"
+        >
+      </div>
+
+      <div class="field">
+        <label>Max</label>
+
+        <input
+          type="number"
+          value="${e.max ?? 100}"
+          onchange="updateSelected('max', this.value)"
+        >
+      </div>
+
+      <div class="field full">
+        <label>Değer</label>
+
+        <input
+          type="number"
+          value="${e.value ?? 50}"
+          onchange="updateSelected('value', this.value)"
+        >
+      </div>
+
+    `;
+
+  }
+
+
+  if (
+    e.type === "progress"
+  ) {
+
+    html += `
+
+      <div class="field full">
+
+        <label>Değer %</label>
+
+        <input
+          type="number"
+          min="0"
+          max="100"
+          value="${e.value || 50}"
+          onchange="updateSelected('value', this.value)"
+        >
+
+      </div>
+
+    `;
+
+  }
+
+
+  if (
+    e.type === "list" ||
+    e.type === "dropdown"
+  ) {
+
+    html += `
+
+      <div class="field full">
+
+        <label>Öğeler</label>
+
+        <input
+          value="${escapeAttr(
+            (e.items || []).join(", ")
+          )}"
+          onchange="updateElementItems(this.value)"
+          placeholder="Öğe 1, Öğe 2, Öğe 3"
+        >
+
+      </div>
+
+    `;
+
+  }
+
+
+  if (
+    e.type === "video" ||
+    e.type === "audio"
+  ) {
+
+    html += `
+
+      <div class="field full">
+
+        <label>Medya kaynağı</label>
+
+        <input
+          value="${escapeAttr(e.source || "")}"
+          onchange="updateSelected('source', this.value)"
+          placeholder="https://..."
+        >
+
+      </div>
+
+    `;
+
+  }
+
+
+  html += `
+
+    </div>
+
+    <div class="action-row">
+
+      <button
+        class="action-btn"
+        onclick="duplicateSelected()"
+      >
+        Kopyala
+      </button>
+
+      <button
+        class="action-btn danger"
+        onclick="deleteSelected()"
+      >
+        Sil
+      </button>
+
+    </div>
+
+  `;
+
+
+  setTimeout(
+    updateImagePreview,
+    0
+  );
+
+
+  return html;
+
+}
+
+
+/* =========================================================
+   EVENTS PANEL
+========================================================= */
+
+function renderEventsPanel() {
+
+  if (!selectedElement) {
+
+    return `
+      <div class="empty">
+        Önce bir element seç.
+      </div>
+    `;
+
+  }
+
+
+  const e =
+    selectedElement;
+
+
+  if (!e.events) {
+
+    e.events = [];
+
+  }
+
+
+  let html = `
+
+    <div class="action-row">
+
+      <button
+        class="action-btn primary"
+        onclick="addEvent()"
+      >
+        ＋ Event ekle
+      </button>
+
+    </div>
+
+  `;
+
+
+  if (e.events.length === 0) {
+
+    html += `
+      <div class="empty">
+        Bu elementte event yok.
+      </div>
+    `;
+
+    return html;
+
+  }
+
+
+  e.events.forEach(
+    (event, eventIndex) => {
+
+      html += `
+
+        <div class="event-box">
+
+          <div class="event-header">
+
+            <div class="event-title">
+              Event #${eventIndex + 1}
+            </div>
+
+            <button
+              class="action-btn danger"
+              onclick="removeEvent(${eventIndex})"
+            >
+              Sil
+            </button>
+
+          </div>
+
+          <div class="field">
+
+            <label>Tetikleyici</label>
+
+            <select
+              onchange="
+                updateEventTrigger(
+                  ${eventIndex},
+                  this.value
+                )
+              "
+            >
+
+              <option
+                value="click"
+                ${
+                  event.trigger === "click"
+                    ? "selected"
+                    : ""
+                }
+              >
+                Click
+              </option>
+
+              <option
+                value="doubleclick"
+                ${
+                  event.trigger === "doubleclick"
+                    ? "selected"
+                    : ""
+                }
+              >
+                Double Click
+              </option>
+
+            </select>
+
+          </div>
+
+      `;
+
+
+      if (!event.actions) {
+
+        event.actions = [];
+
+      }
+
+
+      event.actions.forEach(
+        (action, actionIndex) => {
+
+          html += `
+            <div class="action-box">
+
+              <div class="action-box-title">
+                Action #${actionIndex + 1}
+              </div>
+
+              <div class="field">
+
+                <label>İşlem</label>
+
+                <select
+                  onchange="
+                    changeActionType(
+                      ${eventIndex},
+                      ${actionIndex},
+                      this.value
+                    )
+                  "
+                >
+
+                  <option
+                    value="setText"
+                    ${
+                      action.type === "setText"
+                        ? "selected"
+                        : ""
+                    }
+                  >
+                    Metin değiştir
+                  </option>
+
+                  <option
+                    value="navigate"
+                    ${
+                      action.type === "navigate"
+                        ? "selected"
+                        : ""
+                    }
+                  >
+                    Ekrana git
+                  </option>
+
+                  <option
+                    value="show"
+                    ${
+                      action.type === "show"
+                        ? "selected"
+                        : ""
+                    }
+                  >
+                    Göster
+                  </option>
+
+                  <option
+                    value="hide"
+                    ${
+                      action.type === "hide"
+                        ? "selected"
+                        : ""
+                    }
+                  >
+                    Gizle
+                  </option>
+
+                  <option
+                    value="toggleSwitch"
+                    ${
+                      action.type === "toggleSwitch"
+                        ? "selected"
+                        : ""
+                    }
+                  >
+                    Switch'i aç/kapat
+                  </option>
+
+                </select>
+
+              </div>
+
+          `;
+
+
+          if (
+            action.type === "setText"
+          ) {
+
+            html += `
+
+              <div class="field">
+
+                <label>Hedef</label>
+
+                <select
+                  onchange="
+                    updateActionValue(
+                      ${eventIndex},
+                      ${actionIndex},
+                      'target',
+                      this.value
+                    )
+                  "
+                >
+
+                  ${getElementOptions(
+                    action.target
+                  )}
+
+                </select>
+
+              </div>
+
+              <div class="field">
+
+                <label>Yeni metin</label>
+
+                <input
+                  value="${escapeAttr(action.value || "")}"
+                  onchange="
+                    updateActionValue(
+                      ${eventIndex},
+                      ${actionIndex},
+                      'value',
+                      this.value
+                    )
+                  "
+                >
+
+              </div>
+
+            `;
+
+          }
+
+
+          if (
+            action.type === "navigate"
+          ) {
+
+            html += `
+
+              <div class="field">
+
+                <label>Ekran</label>
+
+                <select
+                  onchange="
+                    updateActionValue(
+                      ${eventIndex},
+                      ${actionIndex},
+                      'screen',
+                      this.value
+                    )
+                  "
+                >
+
+                  ${getScreenOptions(
+                    action.screen
+                  )}
+
+                </select>
+
+              </div>
+
+            `;
+
+          }
+
+
+          if (
+            action.type === "show" ||
+            action.type === "hide" ||
+            action.type === "toggleSwitch"
+          ) {
+
+            html += `
+
+              <div class="field">
+
+                <label>Hedef</label>
+
+                <select
+                  onchange="
+                    updateActionValue(
+                      ${eventIndex},
+                      ${actionIndex},
+                      'target',
+                      this.value
+                    )
+                  "
+                >
+
+                  ${getElementOptions(
+                    action.target,
+                    action.type === "toggleSwitch"
+                  )}
+
+                </select>
+
+              </div>
+
+            `;
+
+          }
+
+
+          html += `
+
+              <button
+                class="action-btn danger"
+                onclick="
+                  removeAction(
+                    ${eventIndex},
+                    ${actionIndex}
+                  )
+                "
+              >
+                Action sil
+              </button>
+
+            </div>
+          `;
+
+        }
+      );
+
+
+      html += `
+
+          <button
+            class="action-btn primary"
+            onclick="addAction(${eventIndex})"
+          >
+            ＋ Action ekle
+          </button>
+
+        </div>
+
+      `;
+
+    }
+  );
+
+
+  return html;
+
+}
+
+
+/* =========================================================
+   ELEMENT OPTIONS
+========================================================= */
+
+function getElementOptions(
+  selected,
+  switchesOnly = false
+) {
+
+  const screen =
+    getCurrentScreen();
+
+
+  return screen.elements
+    .filter(
+      element => {
+
+        if (switchesOnly) {
+
+          return element.type === "switch";
+
+        }
+
+
+        return (
+          element.type === "text" ||
+          element.type === "heading" ||
+          element.type === "label" ||
+          element.type === "button" ||
+          element.type === "badge" ||
+          element.type === "switch"
+        );
+
+      }
+    )
+    .map(
+      element => `
+        <option
+          value="${escapeAttr(element.id)}"
+          ${
+            element.id === selected
+              ? "selected"
+              : ""
+          }
+        >
+          ${escapeHtml(
+            element.text ||
+            (
+              element.type === "switch"
+                ? "Switch"
+                : element.id
+            )
+          )}
+        </option>
+      `
+    )
+    .join("");
+
+}
+
+
+/* =========================================================
+   SCREEN OPTIONS
+========================================================= */
+
+function getScreenOptions(
+  selected
+) {
+
+  return project.screens
+    .map(
+      screen => `
+        <option
+          value="${escapeAttr(screen.id)}"
+          ${
+            screen.id === selected
+              ? "selected"
+              : ""
+          }
+        >
+          ${escapeHtml(screen.name)}
+        </option>
+      `
+    )
+    .join("");
+
+}
+
+
+/* =========================================================
+   ADD ELEMENT
+========================================================= */
+
+function addElement(type) {
+
+  const screen =
+    getCurrentScreen();
+
+
+  const id =
+    type + "_" +
+    Date.now().toString(36);
+
+
+  const element = {
+
+    id,
+
+    type,
+
+    x: 20,
+
+    y:
+      80 +
+      screen.elements.length * 60,
+
+    w: 160,
+
+    h: 50,
+
+    text:
+      type === "text"
+        ? "Yeni metin"
+        : type === "heading"
+          ? "Yeni başlık"
+          : type === "label"
+            ? "Yeni etiket"
+            : type === "button"
+              ? "Yeni buton"
+              : type === "terminal"
+                ? "$ devos"
+                : type === "textarea"
+                  ? ""
+                  : type === "checkbox"
+                    ? "Checkbox"
+                    : type === "radio"
+                      ? "Radio"
+                      : type === "badge"
+                        ? "Badge"
+                        : type === "avatar"
+                          ? "A"
+                          : type === "scrollview"
+                            ? "ScrollView içeriği"
+                            : type === "modal"
+                              ? "Modal"
+                              : type === "sidebar"
+                                ? "☰\n\nAna Sayfa\n\nUygulamalar\n\nAyarlar"
+                                : type === "liquidGlass"
+                                  ? "Liquid Glass"
+                                  : type === "liquidGlassButton"
+                                    ? "Glass Button"
+                                    : type === "liquidGlassCard"
+                                      ? "Glass Card"
+                                      : type === "liquidGlassNav"
+                                        ? "⌂  Ana Sayfa    Apps    ⚙ Ayarlar"
+                                        : type === "liquidGlassTabbar"
+                                          ? "⌂ Ana Sayfa    ◉ Uygulamalar    ⚙ Ayarlar"
+                                          : type === "liquidGlassModal"
+                                            ? "Glass Modal"
+                                            : "",
+
+    color: "#ffffff",
+
+    background: "#2563eb",
+
+    fontSize: 14,
+
+    radius: 10,
+
+    image: "",
+
+    imagePosition: "left",
+
+    imageSize: 24,
+
+    placeholder: "Metin gir...",
+
+    value: 50,
+
+    min: 0,
+
+    max: 100,
+
+    checked: false,
+
+    group: "radio",
+
+    items: [
+      "Öğe 1",
+      "Öğe 2",
+      "Öğe 3"
+    ],
+
+    source: "",
+
+    events: []
+
+  };
+
+
+  if (type === "text") {
+
+    element.w = 250;
+    element.h = 40;
+    element.fontSize = 18;
+
+  }
+
+
+  if (type === "heading") {
+
+    element.w = 300;
+    element.h = 50;
+    element.fontSize = 24;
+
+  }
+
+
+  if (type === "label") {
+
+    element.w = 200;
+    element.h = 35;
+    element.fontSize = 12;
+
+  }
+
+
+  if (type === "textarea") {
+
+    element.w = 280;
+    element.h = 100;
+
+  }
+
+
+  if (type === "checkbox") {
+
+    element.w = 180;
+    element.h = 40;
+
+  }
+
+
+  if (type === "switch") {
+
+    element.w = 60;
+    element.h = 35;
+
+  }
+
+
+  if (type === "radio") {
+
+    element.w = 180;
+    element.h = 40;
+
+  }
+
+
+  if (type === "slider") {
+
+    element.w = 280;
+    element.h = 35;
+
+  }
+
+
+  if (type === "card") {
+
+    element.w = 280;
+    element.h = 100;
+
+    element.background =
+      "#1a2230";
+
+  }
+
+
+  if (type === "image") {
+
+    element.w = 160;
+    element.h = 120;
+
+  }
+
+
+  if (type === "badge") {
+
+    element.w = 90;
+    element.h = 32;
+
+  }
+
+
+  if (type === "divider") {
+
+    element.w = 280;
+    element.h = 20;
+
+  }
+
+
+  if (type === "avatar") {
+
+    element.w = 60;
+    element.h = 60;
+
+  }
+
+
+  if (type === "spinner") {
+
+    element.w = 50;
+    element.h = 50;
+
+    element.autoHideSeconds =
+      0;
+
+  }
+
+
+  if (type === "list") {
+
+    element.w = 280;
+    element.h = 150;
+
+  }
+
+
+  if (type === "scrollview") {
+
+    element.w = 280;
+    element.h = 150;
+
+  }
+
+
+  if (type === "dropdown") {
+
+    element.w = 220;
+    element.h = 45;
+
+  }
+
+
+  if (type === "modal") {
+
+    element.w = 320;
+    element.h = 220;
+
+  }
+
+
+  if (type === "video") {
+
+    element.w = 300;
+    element.h = 180;
+
+  }
+
+
+  if (type === "audio") {
+
+    element.w = 300;
+    element.h = 60;
+
+  }
+
+
+  if (type === "nav") {
+
+    element.w = 320;
+    element.h = 55;
+
+    element.y = 680;
+
+  }
+
+
+  if (type === "sidebar") {
+
+    element.w = 180;
+    element.h = 400;
+
+  }
+
+
+  if (type === "tabbar") {
+
+    element.w = 320;
+    element.h = 55;
+
+    element.y = 680;
+
+  }
+
+
+  if (type === "terminal") {
+
+    element.w = 300;
+    element.h = 130;
+
+  }
+
+
+  /* LIQUID GLASS DEFAULTS */
+
+  if (
+    type === "liquidGlass" ||
+    type === "liquidGlassButton" ||
+    type === "liquidGlassCard" ||
+    type === "liquidGlassNav" ||
+    type === "liquidGlassTabbar" ||
+    type === "liquidGlassModal"
+  ) {
+
+    element.glassColor =
+      "#ffffff";
+
+    element.glassOpacity =
+      18;
+
+    element.blur =
+      18;
+
+    element.saturation =
+      150;
+
+    element.borderColor =
+      "#ffffff";
+
+    element.borderOpacity =
+      22;
+
+    element.borderWidth =
+      1;
+
+    element.shadow =
+      18;
+
+    element.radius =
+      18;
+
+    element.color =
+      "#ffffff";
+
+    element.fontSize =
+      14;
+
+  }
+
+
+  if (
+    type === "liquidGlass"
+  ) {
+
+    element.w = 280;
+    element.h = 100;
+
+  }
+
+
+  if (
+    type === "liquidGlassButton"
+  ) {
+
+    element.w = 180;
+    element.h = 50;
+
+    element.radius =
+      999;
+
+  }
+
+
+  if (
+    type === "liquidGlassCard"
+  ) {
+
+    element.w = 280;
+    element.h = 120;
+
+  }
+
+
+  if (
+    type === "liquidGlassNav"
+  ) {
+
+    element.w = 320;
+    element.h = 55;
+
+    element.y = 680;
+
+  }
+
+
+  if (
+    type === "liquidGlassTabbar"
+  ) {
+
+    element.w = 320;
+    element.h = 55;
+
+    element.y = 680;
+
+  }
+
+
+  if (
+    type === "liquidGlassModal"
+  ) {
+
+    element.w = 300;
+    element.h = 180;
+
+  }
+
+
+  screen.elements.push(
+    element
+  );
+
+
+  selectedElement =
+    element;
+
+
+  pushHistory();
+
+  openTab("edit");
+
+  render();
+
+}
+
+
+/* =========================================================
+   UPDATE SELECTED
+========================================================= */
+
+function updateSelected(
+  property,
+  value
+) {
+
+  if (!selectedElement) return;
+
+
+  if (
+    [
+      "x",
+      "y",
+      "w",
+      "h",
+      "fontSize",
+      "radius",
+      "imageSize",
+      "value",
+      "min",
+      "max",
+      "glassOpacity",
+      "blur",
+      "saturation",
+      "borderWidth",
+      "borderOpacity",
+      "shadow",
+      "autoHideSeconds"
+    ].includes(property)
+  ) {
+
+    value =
+      Number(value);
+
+  }
+
+
+  selectedElement[property] =
+    value;
+
+
+  pushHistory();
+
+  renderCanvas();
+
+  renderPanel();
+
+}
+
+
+/* =========================================================
+   UPDATE ELEMENT ITEMS
+========================================================= */
+
+function updateElementItems(
+  value
+) {
+
+  if (!selectedElement) return;
+
+
+  selectedElement.items =
+    value
+      .split(",")
+      .map(item => item.trim())
+      .filter(Boolean);
+
+
+  pushHistory();
+
+  render();
+
+}
+
+
+/* =========================================================
+   IMAGE SELECT
+========================================================= */
+
+function selectImageFromDevice() {
+
+  if (!selectedElement) {
+
+    toast(
+      "Önce bir element seç."
+    );
+
+    return;
+
+  }
+
+
+  document
+    .getElementById("imageFile")
+    .click();
+
+}
+
+
+/* =========================================================
+   IMAGE FILE HANDLER
+========================================================= */
+
+document
+  .getElementById("imageFile")
+  .addEventListener(
+    "change",
+    function () {
+
+      const file =
+        this.files[0];
+
+
+      if (!file) return;
+
+
+      if (
+        !file.type.startsWith(
+          "image/"
+        )
+      ) {
+
+        toast(
+          "Lütfen bir resim seç."
+        );
+
+        this.value = "";
+
+        return;
+
+      }
+
+
+      const reader =
+        new FileReader();
+
+
+      reader.onload =
+        function(event) {
+
+          if (!selectedElement) {
+            return;
+          }
+
+
+          selectedElement.image =
+            event.target.result;
+
+
+          pushHistory();
+
+          render();
+
+          toast(
+            "Resim eklendi ✓"
+          );
+
+        };
+
+
+      reader.onerror =
+        function() {
+
+          toast(
+            "Resim okunamadı."
+          );
+
+        };
+
+
+      reader.readAsDataURL(
+        file
+      );
+
+
+      this.value = "";
+
+    }
+  );
+
+
+/* =========================================================
+   IMAGE PREVIEW
+========================================================= */
+
+function updateImagePreview() {
+
+  const preview =
+    document.getElementById(
+      "imagePreview"
+    );
+
+
+  if (!preview) return;
+
+
+  if (
+    !selectedElement ||
+    !selectedElement.image
+  ) {
+
+    preview.innerHTML =
+      `
+        <span
+          style="
+            color:#64748b;
+            font-size:10px;
+          "
+        >
+          Resim seçilmedi
+        </span>
+      `;
+
+    return;
+
+  }
+
+
+  preview.innerHTML = `
+    <img
+      src="${selectedElement.image}"
+      alt="Seçilen resim"
+    >
+  `;
+
+}
+
+
+/* =========================================================
+   REMOVE IMAGE
+========================================================= */
+
+function removeElementImage() {
+
+  if (!selectedElement) return;
+
+
+  selectedElement.image =
+    "";
+
+
+  pushHistory();
+
+  render();
+
+  toast(
+    "Resim kaldırıldı"
+  );
+
+}
+
+
+/* =========================================================
+   EVENTS
+========================================================= */
+
+function addEvent() {
+
+  if (!selectedElement) return;
+
+
+  if (!selectedElement.events) {
+
+    selectedElement.events = [];
+
+  }
+
+
+  selectedElement.events.push({
+
+    trigger: "click",
+
+    actions: []
+
+  });
+
+
+  pushHistory();
+
+  renderPanel();
+
+}
+
+
+function removeEvent(
+  index
+) {
+
+  selectedElement.events.splice(
+    index,
+    1
+  );
+
+
+  pushHistory();
+
+  renderPanel();
+
+}
+
+
+function updateEventTrigger(
+  index,
+  trigger
+) {
+
+  selectedElement.events[index]
+    .trigger =
+    trigger;
+
+
+  pushHistory();
+
+}
+
+
+function addAction(
+  eventIndex
+) {
+
+  const action = {
+
+    type:
+      selectedElement.type === "switch"
+        ? "toggleSwitch"
+        : "setText",
+
+    target:
+      selectedElement.type === "switch"
+        ? selectedElement.id
+        : getDefaultTarget(),
+
+    value:
+      "Merhaba!"
+
+  };
+
+
+  selectedElement
+    .events[eventIndex]
+    .actions.push(
+      action
+    );
+
+
+  pushHistory();
+
+  renderPanel();
+
+}
+
+
+function removeAction(
+  eventIndex,
+  actionIndex
+) {
+
+  selectedElement
+    .events[eventIndex]
+    .actions.splice(
+      actionIndex,
+      1
+    );
+
+
+  pushHistory();
+
+  renderPanel();
+
+}
+
+
+function changeActionType(
+  eventIndex,
+  actionIndex,
+  type
+) {
+
+  const action =
+    selectedElement
+      .events[eventIndex]
+      .actions[actionIndex];
+
+
+  action.type =
+    type;
+
+
+  if (type === "setText") {
+
+    action.target =
+      getDefaultTarget();
+
+    action.value =
+      "Yeni metin";
+
+    delete action.screen;
+
+  }
+
+
+  if (type === "navigate") {
+
+    action.screen =
+      project.screens[0]?.id;
+
+    delete action.target;
+    delete action.value;
+
+  }
+
+
+  if (
+    type === "show" ||
+    type === "hide"
+  ) {
+
+    action.target =
+      getDefaultTarget();
+
+    delete action.screen;
+    delete action.value;
+
+  }
+
+
+  if (type === "toggleSwitch") {
+
+    action.target =
+      selectedElement.type === "switch"
+        ? selectedElement.id
+        : getDefaultSwitchTarget();
+
+    delete action.screen;
+    delete action.value;
+
+  }
+
+
+  pushHistory();
+
+  renderPanel();
+
+}
+
+
+function updateActionValue(
+  eventIndex,
+  actionIndex,
+  property,
+  value
+) {
+
+  selectedElement
+    .events[eventIndex]
+    .actions[actionIndex][property] =
+    value;
+
+
+  pushHistory();
+
+}
+
+
+function getDefaultTarget() {
+
+  const screen =
+    getCurrentScreen();
+
+
+  const target =
+    screen.elements.find(
+      element =>
+        element.id !==
+        selectedElement?.id &&
+        (
+          element.type === "text" ||
+          element.type === "button" ||
+          element.type === "heading" ||
+          element.type === "label" ||
+          element.type === "badge"
+        )
+    );
+
+
+  return target
+    ? target.id
+    : "";
+
+}
+
+
+function getDefaultSwitchTarget() {
+
+  const screen =
+    getCurrentScreen();
+
+
+  const target =
+    screen.elements.find(
+      element =>
+        element.type === "switch"
+    );
+
+
+  return target
+    ? target.id
+    : "";
+
+}
+
+
+/* =========================================================
+   RUN EVENT
+========================================================= */
+
+function runEvent(
+  element,
+  trigger
+) {
+
+  if (!element.events) return;
+
+
+  const events =
+    element.events.filter(
+      event =>
+        event.trigger === trigger
+    );
+
+
+  events.forEach(
+    event => {
+
+      if (!event.actions) return;
+
+
+      event.actions.forEach(
+        action => {
+
+          executeAction(
+            action
+          );
+
+        }
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   EXECUTE ACTION
+========================================================= */
+
+function executeAction(
+  action
+) {
+
+  /* SET TEXT */
+
+  if (
+    action.type === "setText"
+  ) {
+
+    for (
+      const screen
+      of project.screens
+    ) {
+
+      const target =
+        screen.elements.find(
+          element =>
+            element.id ===
+            action.target
+        );
+
+
+      if (target) {
+
+        target.text =
+          action.value || "";
+
+      }
+
+    }
+
+
+    renderCanvas();
+
+  }
+
+
+  /* NAVIGATE */
+
+  else if (
+    action.type === "navigate"
+  ) {
+
+    switchScreen(
+      action.screen,
+      true
+    );
+
+  }
+
+
+  /* SHOW */
+
+  else if (
+    action.type === "show"
+  ) {
+
+    const target =
+      findElement(
+        action.target
+      );
+
+
+    if (target) {
+
+      target.hidden =
+        false;
+
+      renderCanvas();
+
+    }
+
+  }
+
+
+  /* HIDE */
+
+  else if (
+    action.type === "hide"
+  ) {
+
+    const target =
+      findElement(
+        action.target
+      );
+
+
+    if (target) {
+
+      target.hidden =
+        true;
+
+      renderCanvas();
+
+    }
+
+  }
+
+
+  /* TOGGLE SWITCH */
+
+  else if (
+    action.type === "toggleSwitch"
+  ) {
+
+    const target =
+      findElement(
+        action.target
+      );
+
+
+    if (
+      target &&
+      target.type === "switch"
+    ) {
+
+      target.checked =
+        !target.checked;
+
+
+      renderCanvas();
+
+    }
+
+  }
+
+}
+
+
+/* =========================================================
+   FIND ELEMENT
+========================================================= */
+
+function findElement(id) {
+
+  for (
+    const screen
+    of project.screens
+  ) {
+
+    const found =
+      screen.elements.find(
+        element =>
+          element.id === id
+      );
+
+
+    if (found) {
+      return found;
+    }
+
+  }
+
+
+  return null;
+
+}
+
+
+/* =========================================================
+   SCREEN SWITCH
+========================================================= */
+
+function switchScreen(
+  id,
+  fromEvent = false
+) {
+
+  const exists =
+    project.screens.some(
+      screen =>
+        screen.id === id
+    );
+
+
+  if (!exists) return;
+
+
+  project.currentScreen =
+    id;
+
+
+  selectedElement =
+    null;
+
+
+  const phoneScreen =
+    document.getElementById(
+      "phoneScreen"
+    );
+
+
+  phoneScreen.classList.remove(
+    "screen-changing"
+  );
+
+
+  void phoneScreen.offsetWidth;
+
+
+  phoneScreen.classList.add(
+    "screen-changing"
+  );
+
+
+  render();
+
+
+  if (!fromEvent) {
+
+    pushHistory();
+
+  }
+
+}
+
+
+/* =========================================================
+   SCREEN MODAL
+========================================================= */
+
+function openScreenModal() {
+
+  document
+    .getElementById(
+      "screenModal"
+    )
+    .classList.add("show");
+
+
+  document
+    .getElementById(
+      "newScreenName"
+    )
+    .focus();
+
+}
+
+
+function closeScreenModal() {
+
+  document
+    .getElementById(
+      "screenModal"
+    )
+    .classList.remove("show");
+
+}
+
+
+function createScreen() {
+
+  const input =
+    document.getElementById(
+      "newScreenName"
+    );
+
+
+  const name =
+    input.value.trim();
+
+
+  if (!name) {
+
+    toast(
+      "Ekran adı gir."
+    );
+
+    return;
+
+  }
+
+
+  const id =
+    createUniqueScreenId(
+      name
+    );
+
+
+  project.screens.push({
+
+    id,
+
+    name,
+
+    background:
+      "#111827",
+
+    elements: []
+
+  });
+
+
+  project.currentScreen =
+    id;
+
+
+  selectedElement =
+    null;
+
+
+  input.value =
+    "";
+
+
+  closeScreenModal();
+
+  pushHistory();
+
+  render();
+
+
+  toast(
+    "Ekran oluşturuldu ✓"
+  );
+
+}
+
+
+function createUniqueScreenId(
+  name
+) {
+
+  let base =
+    name
+      .replace(
+        /[^a-zA-Z0-9_-]/g,
+        "_"
+      );
+
+
+  if (!base) {
+    base = "Screen";
+  }
+
+
+  let id =
+    base;
+
+  let number =
+    2;
+
+
+  while (
+    project.screens.some(
+      screen =>
+        screen.id === id
+    )
+  ) {
+
+    id =
+      base + "_" + number++;
+
+  }
+
+
+  return id;
+
+}
+
+
+/* =========================================================
+   DELETE SELECTED
+========================================================= */
+
+function deleteSelected() {
+
+  if (!selectedElement) return;
+
+
+  const screen =
+    getCurrentScreen();
+
+
+  const index =
+    screen.elements.findIndex(
+      element =>
+        element.id ===
+        selectedElement.id
+    );
+
+
+  if (index === -1) return;
+
+
+  screen.elements.splice(
+    index,
+    1
+  );
+
+
+  clearTimeout(
+    spinnerTimers[selectedElement.id]
+  );
+
+  delete spinnerTimers[
+    selectedElement.id
+  ];
+
+
+  selectedElement =
+    null;
+
+
+  pushHistory();
+
+  render();
+
+  toast(
+    "Element silindi"
+  );
+
+}
+
+
+/* =========================================================
+   DUPLICATE
+========================================================= */
+
+function duplicateSelected() {
+
+  if (!selectedElement) return;
+
+
+  const screen =
+    getCurrentScreen();
+
+
+  const copy =
+    JSON.parse(
+      JSON.stringify(
+        selectedElement
+      )
+    );
+
+
+  copy.id =
+    copy.id +
+    "_copy_" +
+    Date.now()
+      .toString(36);
+
+
+  copy.x += 15;
+
+  copy.y += 15;
+
+
+  screen.elements.push(
+    copy
+  );
+
+
+  selectedElement =
+    copy;
+
+
+  pushHistory();
+
+  render();
+
+  toast(
+    "Element kopyalandı"
+  );
+
+}
+
+
+/* =========================================================
+   PREVIEW
+========================================================= */
+
+function togglePreview() {
+
+  previewMode =
+    !previewMode;
+
+
+  document.body.classList.toggle(
+    "preview-mode",
+    previewMode
+  );
+
+
+  const button =
+    document.getElementById(
+      "previewButton"
+    );
+
+
+  if (previewMode) {
+
+    button.textContent =
+      "■ Düzenle";
+
+    button.classList.remove(
+      "primary"
+    );
+
+
+    selectedElement =
+      null;
+
+
+    renderCanvas();
+
+
+    toast(
+      "Önizleme modu"
+    );
+
+  }
+
+  else {
+
+    Object.keys(
+      spinnerTimers
+    ).forEach(
+      id => {
+
+        clearTimeout(
+          spinnerTimers[id]
+        );
+
+        delete spinnerTimers[id];
+
+      }
+    );
+
+
+    button.textContent =
+      "▶ Önizle";
+
+    button.classList.add(
+      "primary"
+    );
+
+
+    render();
+
+    toast(
+      "Düzenleme modu"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   SAVE
+========================================================= */
+
+function saveProject() {
+
+  try {
+
+    localStorage.setItem(
+      "devos_project",
+      JSON.stringify(
+        project
+      )
+    );
+
+
+    toast(
+      "Proje kaydedildi ✓"
+    );
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    toast(
+      "Kaydetme başarısız"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   LOAD
+========================================================= */
+
+function loadProject() {
+
+  try {
+
+    const saved =
+      localStorage.getItem(
+        "devos_project"
+      );
+
+
+    if (!saved) return;
+
+
+    const data =
+      JSON.parse(
+        saved
+      );
+
+
+    if (
+      data &&
+      Array.isArray(
+        data.screens
+      )
+    ) {
+
+      project =
+        data;
+
+    }
+
+  }
+
+  catch (error) {
+
+    console.error(
+      "Proje yüklenemedi:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   EXPORT
+========================================================= */
+
+function exportProject() {
+
+  const json =
+    JSON.stringify(
+      project,
+      null,
+      2
+    );
+
+
+  const blob =
+    new Blob(
+      [json],
+      {
+        type:
+          "application/json"
+      }
+    );
+
+
+  const url =
+    URL.createObjectURL(
+      blob
+    );
+
+
+  const a =
+    document.createElement(
+      "a"
+    );
+
+
+  a.href =
+    url;
+
+  a.download =
+    "devos-project.json";
+
+
+  document.body.appendChild(
+    a
+  );
+
+  a.click();
+
+  a.remove();
+
+
+  URL.revokeObjectURL(
+    url
+  );
+
+
+  toast(
+    "JSON dışa aktarıldı"
+  );
+
+}
+
+
+/* =========================================================
+   HISTORY
+========================================================= */
+
+function pushHistory() {
+
+  const snapshot =
+    JSON.stringify(
+      project
+    );
+
+
+  if (
+    historyIndex >= 0 &&
+    history[historyIndex] ===
+      snapshot
+  ) {
+
+    return;
+
+  }
+
+
+  history =
+    history.slice(
+      0,
+      historyIndex + 1
+    );
+
+
+  history.push(
+    snapshot
+  );
+
+
+  historyIndex =
+    history.length - 1;
+
+
+  if (
+    history.length > 50
+  ) {
+
+    history.shift();
+
+    historyIndex--;
+
+  }
+
+}
+
+
+function undo() {
+
+  if (
+    historyIndex <= 0
+  ) {
+
+    toast(
+      "Geri alınacak işlem yok"
+    );
+
+    return;
+
+  }
+
+
+  historyIndex--;
+
+
+  project =
+    JSON.parse(
+      history[historyIndex]
+    );
+
+
+  selectedElement =
+    null;
+
+
+  render();
+
+
+  toast(
+    "Geri alındı"
+  );
+
+}
+
+
+function redo() {
+
+  if (
+    historyIndex >=
+    history.length - 1
+  ) {
+
+    toast(
+      "İleri alınacak işlem yok"
+    );
+
+    return;
+
+  }
+
+
+  historyIndex++;
+
+
+  project =
+    JSON.parse(
+      history[historyIndex]
+    );
+
+
+  selectedElement =
+    null;
+
+
+  render();
+
+
+  toast(
+    "İleri alındı"
+  );
+
+}
+
+
+/* =========================================================
+   TIME
+========================================================= */
+
+function updateTime() {
+
+  const now =
+    new Date();
+
+
+  const hours =
+    String(
+      now.getHours()
+    ).padStart(
+      2,
+      "0"
+    );
+
+
+  const minutes =
+    String(
+      now.getMinutes()
+    ).padStart(
+      2,
+      "0"
+    );
+
+
+  document.getElementById(
+    "statusTime"
+  ).textContent =
+    hours + ":" + minutes;
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer;
+
+
+function toast(message) {
+
+  const element =
+    document.getElementById(
+      "toast"
+    );
+
+
+  element.textContent =
+    message;
+
+
+  element.classList.add(
+    "show"
+  );
+
+
+  clearTimeout(
+    toastTimer
+  );
+
+
+  toastTimer =
+    setTimeout(
+      () => {
+
+        element.classList.remove(
+          "show"
+        );
+
+      },
+      1500
+    );
+
+}
+
+
+/* =========================================================
+   ESCAPE
+========================================================= */
+
+function escapeHtml(
+  value
+) {
+
+  return String(value)
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
+}
+
+
+function escapeAttr(
+  value
+) {
+
+  return escapeHtml(
+    value
+  );
+
+}
+
+
+/* =========================================================
+   HIDDEN ELEMENT SUPPORT
+========================================================= */
+
+const originalCreateElementNode =
+  createElementNode;
+
+
+/*
+  hidden desteğini mevcut
+  render sistemine uygula.
+*/
+
+function renderCanvasWithHiddenSupport() {
+
+  renderCanvas();
+
+}
+
+
+/* =========================================================
+   KEYBOARD
+========================================================= */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.ctrlKey &&
+      event.key.toLowerCase() === "s"
+    ) {
+
+      event.preventDefault();
+
+      saveProject();
+
+    }
+
+
+    if (
+      event.ctrlKey &&
+      event.key.toLowerCase() === "z"
+    ) {
+
+      event.preventDefault();
+
+      undo();
+
+    }
+
+
+    if (
+      event.ctrlKey &&
+      event.key.toLowerCase() === "y"
+    ) {
+
+      event.preventDefault();
+
+      redo();
+
+    }
+
+
+    if (
+      event.key === "Delete" &&
+      selectedElement &&
+      !previewMode
+    ) {
+
+      deleteSelected();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   PATCH HIDDEN RENDER
+========================================================= */
+
+const oldRenderCanvas =
+  renderCanvas;
+
+
+renderCanvas =
+  function() {
+
+    const screen =
+      getCurrentScreen();
+
+    const canvas =
+      document.getElementById(
+        "canvas"
+      );
+
+    const phoneScreen =
+      document.getElementById(
+        "phoneScreen"
+      );
+
+
+    canvas.innerHTML =
+      "";
+
+
+    phoneScreen.style.background =
+      screen.background ||
+      "#111827";
+
+
+    screen.elements.forEach(
+      element => {
+
+        if (element.hidden) {
+          return;
+        }
+
+
+        const node =
+          createElementNode(
+            element
+          );
+
+
+        canvas.appendChild(
+          node
+        );
+
+      }
+    );
+
+  };
+
+
+/* =========================================================
+   START
+========================================================= */
+
+render();
+
+</script>
+
+</body>
+  </html>
