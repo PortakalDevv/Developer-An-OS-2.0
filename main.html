@@ -8,7 +8,7 @@
   content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
 >
 
-<title>DevOS Mobile Studio v1.45.32</title>
+<title>DevOS Mobile Studio v1.47.61</title>
 
 <style>
 * {
@@ -116,7 +116,7 @@ button {
   max-width: 100%;
   flex-shrink: 0;
   background: #111827;
-  border: 1px solid #273449;
+  border: 1px solid #273444;
   border-radius: 12px;
   box-shadow:
     0 25px 70px rgba(0,0,0,.35);
@@ -484,6 +484,24 @@ button {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+/* ZAMAN SAYACI (TIMER) STYLES */
+.el-timer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 6px;
+  font-family: monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: #38bdf8;
+  letter-spacing: 2px;
 }
 
 
@@ -904,6 +922,170 @@ textarea {
   transform: translateX(-50%) translateY(0);
 }
 
+/* NOTIFICATION BANNER */
+
+.notification-banner {
+  position: absolute;
+  top: -70px;
+  left: 10px;
+  right: 10px;
+  z-index: 9500;
+  background: rgba(30, 41, 59, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+}
+
+.notification-banner.show {
+  transform: translateY(80px);
+}
+
+.notif-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #2563eb;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.notif-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.notif-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.notif-message {
+  font-size: 11px;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* CONTROL CENTER */
+
+.control-center {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9600;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  padding: 25px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  transform: translateY(-100%);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.control-center.show {
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.cc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+  margin-bottom: 5px;
+}
+
+.cc-close {
+  background: rgba(255,255,255,0.1);
+  border: 0;
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.cc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.cc-tile {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.cc-tile.active {
+  background: #2563eb;
+  border-color: #3b82f6;
+}
+
+.cc-tile-icon {
+  font-size: 18px;
+}
+
+.cc-tile-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.cc-slider-box {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cc-slider-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.cc-slider {
+  width: 100%;
+  accent-color: #3b82f6;
+}
+
 /* PREVIEW MODE */
 
 .preview-mode .canvas-element {
@@ -1036,6 +1218,49 @@ textarea {
         id="phoneScreen"
         class="phone-screen"
       >
+
+        <!-- CONTROL CENTER -->
+        <div id="controlCenter" class="control-center">
+          <div class="cc-header">
+            <span>Kontrol Merkezi</span>
+            <button class="cc-close" onclick="closeControlCenter()">✕</button>
+          </div>
+          <div class="cc-grid">
+            <div class="cc-tile active" onclick="toggleCCTile(this)">
+              <div class="cc-tile-icon">📶</div>
+              <div class="cc-tile-title">Wi-Fi</div>
+            </div>
+            <div class="cc-tile active" onclick="toggleCCTile(this)">
+              <div class="cc-tile-icon">ᛒ</div>
+              <div class="cc-tile-title">Bluetooth</div>
+            </div>
+            <div class="cc-tile" onclick="toggleCCTile(this)">
+              <div class="cc-tile-icon">✈️</div>
+              <div class="cc-tile-title">Uçak Modu</div>
+            </div>
+            <div class="cc-tile" onclick="toggleCCTile(this)">
+              <div class="cc-tile-icon">🔦</div>
+              <div class="cc-tile-title">El Feneri</div>
+            </div>
+          </div>
+          <div class="cc-slider-box">
+            <div class="cc-slider-label">🔊 Ses Seviyesi</div>
+            <input type="range" class="cc-slider" value="70">
+          </div>
+          <div class="cc-slider-box">
+            <div class="cc-slider-label">☀️ Parlaklık</div>
+            <input type="range" class="cc-slider" value="85">
+          </div>
+        </div>
+
+        <!-- NOTIFICATION BANNER CONTAINER -->
+        <div id="notificationBanner" class="notification-banner">
+          <div class="notif-icon">🔔</div>
+          <div class="notif-content">
+            <div id="notifTitle" class="notif-title">DevOS</div>
+            <div id="notifMessage" class="notif-message">Yeni bildirim mesajı</div>
+          </div>
+        </div>
 
         <div class="statusbar">
           <span id="statusTime">12:00</span>
@@ -1388,10 +1613,12 @@ let clipboard = null;
 
 
 /* =========================================================
-   SPINNER TIMER STATE
+   TIMERS & SPINNER STATE
 ========================================================= */
 
 const spinnerTimers = {};
+
+const activeClockIntervals = {};
 
 
 /* =========================================================
@@ -1498,6 +1725,14 @@ function renderCanvas() {
 
   phoneScreen.style.background =
     screen.background || "#111827";
+
+  if (screen.backgroundImage) {
+    phoneScreen.style.backgroundImage = `url(${screen.backgroundImage})`;
+    phoneScreen.style.backgroundSize = "cover";
+    phoneScreen.style.backgroundPosition = "center";
+  } else {
+    phoneScreen.style.backgroundImage = "none";
+  }
 
 
   screen.elements.forEach(element => {
@@ -1669,6 +1904,11 @@ function startSpinnerTimer(element) {
 
         renderCanvas();
 
+        runEvent(
+          element,
+          "timerEnd"
+        );
+
       },
       seconds * 1000
     );
@@ -1679,6 +1919,47 @@ function startSpinnerTimer(element) {
 /* =========================================================
    CREATE ELEMENT NODE
 ========================================================= */
+
+function formatTimeDisplay(sec) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+}
+
+
+function startTimerClock(element, displayNode) {
+  clearInterval(activeClockIntervals[element.id]);
+  
+  if (!previewMode) return;
+
+  let currentSec = Number(element.timerSeconds ?? 60);
+  const mode = element.timerMode || "down"; // "down" veya "up"
+
+  activeClockIntervals[element.id] = setInterval(() => {
+    if (mode === "down") {
+      currentSec--;
+      if (currentSec <= 0) {
+        currentSec = 0;
+        clearInterval(activeClockIntervals[element.id]);
+        displayNode.textContent = formatTimeDisplay(0);
+        runEvent(element, "timeUp");
+        return;
+      }
+    } else {
+      currentSec++;
+      const target = Number(element.targetSeconds ?? 60);
+      if (target > 0 && currentSec >= target) {
+        currentSec = target;
+        clearInterval(activeClockIntervals[element.id]);
+        displayNode.textContent = formatTimeDisplay(currentSec);
+        runEvent(element, "timeUp");
+        return;
+      }
+    }
+    displayNode.textContent = formatTimeDisplay(currentSec);
+  }, 1000);
+}
+
 
 function createElementNode(element) {
 
@@ -1901,6 +2182,90 @@ function createElementNode(element) {
       element.placeholder || "Metin gir...";
 
     node.appendChild(input);
+
+  }
+
+
+  /* PASSWORD INPUT (ŞİFRE ELEMENTİ) */
+
+  else if (element.type === "password") {
+
+    const input =
+      document.createElement("input");
+
+    input.className =
+      "el-input";
+
+    input.type = "password";
+
+    input.placeholder =
+      element.placeholder || "Şifre gir...";
+
+    input.value =
+      element.text || "";
+
+    if (previewMode) {
+
+      input.addEventListener(
+        "input",
+        event => {
+
+          element.text =
+            event.target.value;
+
+          if (
+            element.text ===
+            (element.value || "1234")
+          ) {
+
+            runEvent(
+              element,
+              "correctPassword"
+            );
+
+          } else {
+
+            runEvent(
+              element,
+              "wrongPassword"
+            );
+
+          }
+
+        }
+      );
+
+    } else {
+
+      input.addEventListener(
+        "input",
+        event => {
+
+          element.text =
+            event.target.value;
+
+          pushHistory();
+
+        }
+      );
+
+    }
+
+    node.appendChild(input);
+
+  }
+
+
+  /* ZAMAN SAYACI (TIMER ELEMENTI) */
+
+  else if (element.type === "timer") {
+
+    node.classList.add("el-timer");
+
+    const initialSec = Number(element.timerSeconds ?? 60);
+    node.textContent = formatTimeDisplay(initialSec);
+
+    startTimerClock(element, node);
 
   }
 
@@ -2562,6 +2927,27 @@ function createElementNode(element) {
 
         event.stopPropagation();
 
+        if (
+          element.type === "switch"
+        ) {
+
+          element.checked =
+            !element.checked;
+
+          renderCanvas();
+
+          runEvent(
+            element,
+            element.checked
+              ? "switchOn"
+              : "switchOff"
+          );
+
+          return;
+
+        }
+
+
         runEvent(
           element,
           "click"
@@ -2792,6 +3178,20 @@ function renderAddPanel() {
 
       <button
         class="element-item"
+        onclick="addElement('password')"
+      >
+        🔑 Şifre
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('timer')"
+      >
+        ⏱️ Zaman Sayacı
+      </button>
+
+      <button
+        class="element-item"
         onclick="addElement('textarea')"
       >
         ▤ Textarea
@@ -3003,11 +3403,41 @@ function renderAddPanel() {
 function renderEditPanel() {
 
   if (!selectedElement) {
-
+    const screen = getCurrentScreen();
     return `
-      <div class="empty">
-        Bir element seç.
+      <div class="form-grid">
+        <div class="field full">
+          <label>Arka Plan Rengi</label>
+          <input
+            type="color"
+            value="${screen.background || "#111827"}"
+            onchange="updateScreenBgColor(this.value)"
+          >
+        </div>
+        <div class="field full">
+          <label>Arka Plan Resmi</label>
+          <button
+            class="secondary-btn"
+            onclick="selectScreenImage()"
+          >
+            📷 Cihazdan resim seç
+          </button>
+          <div
+            id="screenImagePreview"
+            class="image-preview"
+          >
+            ${screen.backgroundImage ? `<img src="${screen.backgroundImage}" alt="Arka plan">` : `<span style="color:#64748b;font-size:10px;">Resim seçilmedi</span>`}
+          </div>
+          <button
+            class="danger-btn"
+            onclick="removeScreenBgImage()"
+            style="${screen.backgroundImage ? "" : "display:none;"}"
+          >
+            🗑 Resmi kaldır
+          </button>
+        </div>
       </div>
+      <input id="screenImageFile" type="file" accept="image/*" hidden onchange="handleScreenImageUpload(this)">
     `;
 
   }
@@ -3055,6 +3485,14 @@ function renderEditPanel() {
           value="${e.h}"
           onchange="updateSelected('h', this.value)"
         >
+      </div>
+
+      <div class="field full">
+        <label>Görünürlük (Başlangıç Durumu)</label>
+        <select onchange="updateSelected('hidden', this.value === 'true')">
+          <option value="false" ${!e.hidden ? "selected" : ""}>Görünür</option>
+          <option value="true" ${e.hidden ? "selected" : ""}>Gizli</option>
+        </select>
       </div>
 
   `;
@@ -3295,6 +3733,84 @@ function renderEditPanel() {
         >
 
       </div>
+
+    `;
+
+  }
+
+
+  /* PASSWORD AYARLARI */
+
+  if (
+    e.type === "password"
+  ) {
+
+    html += `
+
+      <div class="field full">
+
+        <label>Doğru Şifre (Anahtar Değer)</label>
+
+        <input
+          value="${escapeAttr(e.value || "1234")}"
+          onchange="updateSelected('value', this.value)"
+        >
+
+      </div>
+
+    `;
+
+  }
+
+
+  /* TIMER AYARLARI */
+
+  if (
+    e.type === "timer"
+  ) {
+
+    html += `
+
+      <div class="field">
+
+        <label>Sayım Modu</label>
+
+        <select onchange="updateSelected('timerMode', this.value)">
+          <option value="down" ${e.timerMode !== "up" ? "selected" : ""}>Geri Sayım (Down)</option>
+          <option value="up" ${e.timerMode === "up" ? "selected" : ""}>İleri Sayım (Up)</option>
+        </select>
+
+      </div>
+
+      <div class="field">
+
+        <label>Başlangıç Süresi (Saniye)</label>
+
+        <input
+          type="number"
+          value="${e.timerSeconds ?? 60}"
+          onchange="updateSelected('timerSeconds', this.value)"
+        >
+
+      </div>
+
+      ${
+        e.timerMode === "up"
+          ? `
+            <div class="field full">
+
+              <label>Hedef Süre (Saniye - Event İçin)</label>
+
+              <input
+                type="number"
+                value="${e.targetSeconds ?? 60}"
+                onchange="updateSelected('targetSeconds', this.value)"
+              >
+
+            </div>
+          `
+          : ""
+      }
 
     `;
 
@@ -3872,6 +4388,96 @@ function renderEventsPanel() {
                 Double Click
               </option>
 
+              ${
+                e.type === "switch"
+                  ? `
+                    <option
+                      value="switchOn"
+                      ${
+                        event.trigger === "switchOn"
+                          ? "selected"
+                          : ""
+                      }
+                    >
+                      Switch Açıldı
+                    </option>
+
+                    <option
+                      value="switchOff"
+                      ${
+                        event.trigger === "switchOff"
+                          ? "selected"
+                          : ""
+                      }
+                    >
+                      Switch Kapatıldı
+                    </option>
+                  `
+                  : ""
+              }
+
+              ${
+                e.type === "spinner"
+                  ? `
+                    <option
+                      value="timerEnd"
+                      ${
+                        event.trigger === "timerEnd"
+                          ? "selected"
+                          : ""
+                      }
+                    >
+                      Zamanlayıcı Bittiğinde
+                    </option>
+                  `
+                  : ""
+              }
+
+              ${
+                e.type === "password"
+                  ? `
+                    <option
+                      value="correctPassword"
+                      ${
+                        event.trigger === "correctPassword"
+                          ? "selected"
+                          : ""
+                      }
+                    >
+                      Şifre Doğru Girildiğinde
+                    </option>
+
+                    <option
+                      value="wrongPassword"
+                      ${
+                        event.trigger === "wrongPassword"
+                          ? "selected"
+                          : ""
+                      }
+                    >
+                      Şifre Yanlış / Değişirken
+                    </option>
+                  `
+                  : ""
+              }
+
+              ${
+                e.type === "timer"
+                  ? `
+                    <option
+                      value="timeUp"
+                      ${
+                        event.trigger === "timeUp"
+                          ? "selected"
+                          : ""
+                      }
+                    >
+                      Süre Dolduğunda / Hedefe Ulaşıldığında
+                    </option>
+                  `
+                  : ""
+              }
+
             </select>
 
           </div>
@@ -3963,6 +4569,50 @@ function renderEventsPanel() {
                     }
                   >
                     Switch'i aç/kapat
+                  </option>
+
+                  <option
+                    value="toast"
+                    ${
+                      action.type === "toast"
+                        ? "selected"
+                        : ""
+                    }
+                  >
+                    Toast göster
+                  </option>
+
+                  <option
+                    value="changeColor"
+                    ${
+                      action.type === "changeColor"
+                        ? "selected"
+                        : ""
+                    }
+                  >
+                    Buton rengini değiştir
+                  </option>
+
+                  <option
+                    value="notificationBanner"
+                    ${
+                      action.type === "notificationBanner"
+                        ? "selected"
+                        : ""
+                    }
+                  >
+                    Bildirim Paneli Göster
+                  </option>
+
+                  <option
+                    value="controlCenter"
+                    ${
+                      action.type === "controlCenter"
+                        ? "selected"
+                        : ""
+                    }
+                  >
+                    Kontrol Merkezi Aç
                   </option>
 
                 </select>
@@ -4095,6 +4745,135 @@ function renderEventsPanel() {
           }
 
 
+          if (
+            action.type === "toast"
+          ) {
+
+            html += `
+
+              <div class="field">
+
+                <label>Toast mesajı</label>
+
+                <input
+                  value="${escapeAttr(action.value || "")}"
+                  onchange="
+                    updateActionValue(
+                      ${eventIndex},
+                      ${actionIndex},
+                      'value',
+                      this.value
+                    )
+                  "
+                >
+
+              </div>
+
+            `;
+
+          }
+
+
+          if (
+            action.type === "changeColor"
+          ) {
+
+            html += `
+
+              <div class="field">
+
+                <label>Hedef Buton</label>
+
+                <select
+                  onchange="
+                    updateActionValue(
+                      ${eventIndex},
+                      ${actionIndex},
+                      'target',
+                      this.value
+                    )
+                  "
+                >
+
+                  ${getElementOptions(
+                    action.target
+                  )}
+
+                </select>
+
+              </div>
+
+              <div class="field">
+
+                <label>Yeni Renk</label>
+
+                <input
+                  type="color"
+                  value="${action.value || "#16a34a"}"
+                  onchange="
+                    updateActionValue(
+                      ${eventIndex},
+                      ${actionIndex},
+                      'value',
+                      this.value
+                    )
+                  "
+                />
+
+              </div>
+
+            `;
+
+          }
+
+
+          if (
+            action.type === "notificationBanner"
+          ) {
+
+            html += `
+
+              <div class="field">
+
+                <label>Bildirim Başlığı</label>
+
+                <input
+                  value="${escapeAttr(action.title || "DevOS")}"
+                  onchange="
+                    updateActionValue(
+                      ${eventIndex},
+                      ${actionIndex},
+                      'title',
+                      this.value
+                    )
+                  "
+                >
+
+              </div>
+
+              <div class="field">
+
+                <label>Bildirim Mesajı</label>
+
+                <input
+                  value="${escapeAttr(action.value || "Yeni bildirim")}"
+                  onchange="
+                    updateActionValue(
+                      ${eventIndex},
+                      ${actionIndex},
+                      'value',
+                      this.value
+                    )
+                  "
+                >
+
+              </div>
+
+            `;
+
+          }
+
+
           html += `
 
               <button
@@ -4164,11 +4943,10 @@ function getElementOptions(
 
         return (
           element.type === "text" ||
+          element.type === "button" ||
           element.type === "heading" ||
           element.type === "label" ||
-          element.type === "button" ||
-          element.type === "badge" ||
-          element.type === "switch"
+          element.type === "badge"
         );
 
       }
@@ -4257,6 +5035,8 @@ function addElement(type) {
     w: 160,
 
     h: 50,
+
+    hidden: false,
 
     text:
       type === "text"
@@ -4361,6 +5141,28 @@ function addElement(type) {
     element.w = 200;
     element.h = 35;
     element.fontSize = 12;
+
+  }
+
+
+  if (type === "password") {
+
+    element.w = 220;
+    element.h = 45;
+    element.placeholder = "Şifre girin...";
+    element.value = "1234"; // Doğru şifre
+    element.text = ""; // Girilen değer
+
+  }
+
+
+  if (type === "timer") {
+
+    element.w = 140;
+    element.h = 45;
+    element.timerSeconds = 60; // 60 saniyeden başla
+    element.timerMode = "down"; // "down" = geri sayım, "up" = ileri sayım
+    element.targetSeconds = 60;
 
   }
 
@@ -4696,7 +5498,6 @@ function updateSelected(
       "fontSize",
       "radius",
       "imageSize",
-      "value",
       "min",
       "max",
       "glassOpacity",
@@ -4705,13 +5506,20 @@ function updateSelected(
       "borderWidth",
       "borderOpacity",
       "shadow",
-      "autoHideSeconds"
+      "autoHideSeconds",
+      "timerSeconds",
+      "targetSeconds"
     ].includes(property)
   ) {
 
     value =
       Number(value);
 
+  }
+
+
+  if (property === "value" && selectedElement.type !== "password") {
+    value = Number(value);
   }
 
 
@@ -4948,7 +5756,16 @@ function addEvent() {
 
   selectedElement.events.push({
 
-    trigger: "click",
+    trigger:
+      selectedElement.type === "spinner"
+        ? "timerEnd"
+        : selectedElement.type === "switch"
+          ? "switchOn"
+          : selectedElement.type === "password"
+            ? "correctPassword"
+            : selectedElement.type === "timer"
+              ? "timeUp"
+              : "click",
 
     actions: []
 
@@ -4990,6 +5807,8 @@ function updateEventTrigger(
 
 
   pushHistory();
+
+  renderPanel();
 
 }
 
@@ -5075,6 +5894,7 @@ function changeActionType(
       "Yeni metin";
 
     delete action.screen;
+    delete action.title;
 
   }
 
@@ -5086,6 +5906,7 @@ function changeActionType(
 
     delete action.target;
     delete action.value;
+    delete action.title;
 
   }
 
@@ -5100,6 +5921,7 @@ function changeActionType(
 
     delete action.screen;
     delete action.value;
+    delete action.title;
 
   }
 
@@ -5113,6 +5935,50 @@ function changeActionType(
 
     delete action.screen;
     delete action.value;
+    delete action.title;
+
+  }
+
+
+  if (type === "toast") {
+
+    action.value = "İşlem başarılı!";
+
+    delete action.target;
+    delete action.screen;
+    delete action.title;
+
+  }
+
+
+  if (type === "changeColor") {
+
+    action.target = selectedElement.id;
+    action.value = "#16a34a";
+
+    delete action.screen;
+    delete action.title;
+
+  }
+
+
+  if (type === "notificationBanner") {
+
+    action.title = "DevOS";
+    action.value = "Yeni bildirim mesajı";
+
+    delete action.target;
+    delete action.screen;
+
+  }
+
+
+  if (type === "controlCenter") {
+
+    delete action.target;
+    delete action.screen;
+    delete action.value;
+    delete action.title;
 
   }
 
@@ -5141,6 +6007,10 @@ function updateActionValue(
 
 }
 
+
+/* =========================================================
+   DEFAULT TARGET
+========================================================= */
 
 function getDefaultTarget() {
 
@@ -5358,7 +6228,86 @@ function executeAction(
 
       renderCanvas();
 
+      runEvent(
+        target,
+        target.checked
+          ? "switchOn"
+          : "switchOff"
+      );
+
     }
+
+  }
+
+
+  /* TOAST */
+
+  else if (
+    action.type === "toast"
+  ) {
+
+    toast(
+      action.value || "Bildirim"
+    );
+
+  }
+
+
+  /* CHANGE COLOR */
+
+  else if (
+    action.type === "changeColor"
+  ) {
+
+    for (
+      const screen
+      of project.screens
+    ) {
+
+      const target =
+        screen.elements.find(
+          element =>
+            element.id ===
+            action.target
+        );
+
+
+      if (target) {
+
+        target.background =
+          action.value || "#2563eb";
+
+      }
+
+    }
+
+
+    renderCanvas();
+
+  }
+
+
+  /* NOTIFICATION BANNER */
+
+  else if (
+    action.type === "notificationBanner"
+  ) {
+
+    showNotificationBanner(
+      action.title || "DevOS",
+      action.value || "Yeni bildirim"
+    );
+
+  }
+
+
+  /* CONTROL CENTER */
+
+  else if (
+    action.type === "controlCenter"
+  ) {
+
+    toggleControlCenter();
 
   }
 
@@ -5635,6 +6584,14 @@ function deleteSelected() {
     selectedElement.id
   ];
 
+  clearInterval(
+    activeClockIntervals[selectedElement.id]
+  );
+
+  delete activeClockIntervals[
+    selectedElement.id
+  ];
+
 
   selectedElement =
     null;
@@ -5761,6 +6718,20 @@ function togglePreview() {
         );
 
         delete spinnerTimers[id];
+
+      }
+    );
+
+    Object.keys(
+      activeClockIntervals
+    ).forEach(
+      id => {
+
+        clearInterval(
+          activeClockIntervals[id]
+        );
+
+        delete activeClockIntervals[id];
 
       }
     );
@@ -6143,6 +7114,46 @@ function toast(message) {
 
 
 /* =========================================================
+   NOTIFICATION BANNER SYSTEM
+========================================================= */
+
+let notifTimer;
+
+function showNotificationBanner(title, message) {
+  const banner = document.getElementById("notificationBanner");
+  document.getElementById("notifTitle").textContent = title;
+  document.getElementById("notifMessage").textContent = message;
+
+  banner.classList.add("show");
+
+  clearTimeout(notifTimer);
+
+  notifTimer = setTimeout(() => {
+    banner.classList.remove("show");
+  }, 2500);
+}
+
+
+/* =========================================================
+   CONTROL CENTER SYSTEM
+========================================================= */
+
+function toggleControlCenter() {
+  const cc = document.getElementById("controlCenter");
+  cc.classList.toggle("show");
+}
+
+function closeControlCenter() {
+  const cc = document.getElementById("controlCenter");
+  cc.classList.remove("show");
+}
+
+function toggleCCTile(tile) {
+  tile.classList.toggle("active");
+}
+
+
+/* =========================================================
    ESCAPE
 ========================================================= */
 
@@ -6193,11 +7204,6 @@ function escapeAttr(
 const originalCreateElementNode =
   createElementNode;
 
-
-/*
-  hidden desteğini mevcut
-  render sistemine uygula.
-*/
 
 function renderCanvasWithHiddenSupport() {
 
@@ -6297,11 +7303,27 @@ renderCanvas =
       screen.background ||
       "#111827";
 
+    if (screen.backgroundImage) {
+      phoneScreen.style.backgroundImage = `url(${screen.backgroundImage})`;
+      phoneScreen.style.backgroundSize = "cover";
+      phoneScreen.style.backgroundPosition = "center";
+    } else {
+      phoneScreen.style.backgroundImage = "none";
+    }
+
 
     screen.elements.forEach(
       element => {
 
-        if (element.hidden) {
+        if (element.hidden && !previewMode) {
+          // Düzenleme modunda gizli elementler soluk (hayalet) olarak görünsün ki yönetilebilsin
+          const node = createElementNode(element);
+          node.style.opacity = "0.35";
+          canvas.appendChild(node);
+          return;
+        }
+
+        if (element.hidden && previewMode) {
           return;
         }
 
@@ -6323,6 +7345,45 @@ renderCanvas =
 
 
 /* =========================================================
+   SCREEN BACKGROUND FUNCTIONS
+========================================================= */
+
+function updateScreenBgColor(val) {
+  const screen = getCurrentScreen();
+  screen.background = val;
+  pushHistory();
+  renderCanvas();
+}
+
+function selectScreenImage() {
+  document.getElementById("screenImageFile").click();
+}
+
+function handleScreenImageUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const screen = getCurrentScreen();
+    screen.backgroundImage = e.target.result;
+    pushHistory();
+    render();
+    toast("Arka plan resmi eklendi ✓");
+  };
+  reader.readAsDataURL(file);
+  input.value = "";
+}
+
+function removeScreenBgImage() {
+  const screen = getCurrentScreen();
+  screen.backgroundImage = "";
+  pushHistory();
+  render();
+  toast("Arka plan resmi kaldırıldı");
+}
+
+
+/* =========================================================
    START
 ========================================================= */
 
@@ -6331,4 +7392,4 @@ render();
 </script>
 
 </body>
-  </html>
+</html>
