@@ -504,6 +504,132 @@ button {
   letter-spacing: 2px;
 }
 
+/* OS DIALOG & ALERT BOX STYLES */
+.el-os-dialog {
+  width: 100%;
+  height: 100%;
+  background: rgba(30, 41, 59, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 18px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+}
+
+.el-os-dialog-header {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.el-os-dialog-body {
+  font-size: 11px;
+  color: #cbd5e1;
+  text-align: center;
+  line-height: 1.4;
+  margin-bottom: 12px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.el-os-dialog-actions {
+  display: flex;
+  gap: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 10px;
+}
+
+.el-os-dialog-btn {
+  flex: 1;
+  padding: 8px;
+  border: 0;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: 0.15s;
+}
+
+.el-os-dialog-btn.cancel {
+  background: rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+}
+
+.el-os-dialog-btn.confirm {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+/* PIN ELEMENT STYLES */
+.el-pin {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #111827;
+  border: 1px solid #374151;
+  border-radius: 12px;
+  padding: 10px;
+  gap: 10px;
+}
+
+.pin-dots {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.pin-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid #64748b;
+  background: transparent;
+  transition: 0.15s;
+}
+
+.pin-dot.filled {
+  background: #38bdf8;
+  border-color: #38bdf8;
+}
+
+.pin-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  width: 100%;
+  max-width: 150px;
+}
+
+.pin-key-btn {
+  background: #1e293b;
+  border: 0;
+  color: white;
+  padding: 6px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pin-key-btn:active {
+  background: #2563eb;
+}
+
 
 /* =========================================================
    LIQUID GLASS ELEMENTS
@@ -1933,7 +2059,7 @@ function startTimerClock(element, displayNode) {
   if (!previewMode) return;
 
   let currentSec = Number(element.timerSeconds ?? 60);
-  const mode = element.timerMode || "down"; // "down" veya "up"
+  const mode = element.timerMode || "down";
 
   activeClockIntervals[element.id] = setInterval(() => {
     if (mode === "down") {
@@ -1958,6 +2084,22 @@ function startTimerClock(element, displayNode) {
     }
     displayNode.textContent = formatTimeDisplay(currentSec);
   }, 1000);
+}
+
+
+function checkPinComplete(element) {
+  const len = Number(element.pinLength ?? 4);
+  if ((element.text || "").length === len) {
+    if (element.text === (element.value || "1234")) {
+      runEvent(element, "correctPin");
+    } else {
+      runEvent(element, "wrongPin");
+      setTimeout(() => {
+        element.text = "";
+        renderCanvas();
+      }, 400);
+    }
+  }
 }
 
 
@@ -2186,72 +2328,74 @@ function createElementNode(element) {
   }
 
 
-  /* PASSWORD INPUT (ŞİFRE ELEMENTİ) */
+  /* PIN ELEMENTİ */
 
-  else if (element.type === "password") {
+  else if (element.type === "pin") {
 
-    const input =
-      document.createElement("input");
+    node.classList.add("el-pin");
 
-    input.className =
-      "el-input";
+    const dotsWrap = document.createElement("div");
+    dotsWrap.className = "pin-dots";
+    const len = Number(element.pinLength ?? 4);
+    const currentText = element.text || "";
 
-    input.type = "password";
-
-    input.placeholder =
-      element.placeholder || "Şifre gir...";
-
-    input.value =
-      element.text || "";
+    for (let i = 0; i < len; i++) {
+      const dot = document.createElement("div");
+      dot.className = "pin-dot" + (i < currentText.length ? " filled" : "");
+      dotsWrap.appendChild(dot);
+    }
+    node.appendChild(dotsWrap);
 
     if (previewMode) {
+      const keypad = document.createElement("div");
+      keypad.className = "pin-keypad";
 
-      input.addEventListener(
-        "input",
-        event => {
-
-          element.text =
-            event.target.value;
-
-          if (
-            element.text ===
-            (element.value || "1234")
-          ) {
-
-            runEvent(
-              element,
-              "correctPassword"
-            );
-
-          } else {
-
-            runEvent(
-              element,
-              "wrongPassword"
-            );
-
+      for (let n = 1; n <= 9; n++) {
+        const kBtn = document.createElement("button");
+        kBtn.className = "pin-key-btn";
+        kBtn.textContent = n;
+        kBtn.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          if ((element.text || "").length < len) {
+            element.text = (element.text || "") + n;
+            renderCanvas();
+            checkPinComplete(element);
           }
+        });
+        keypad.appendChild(kBtn);
+      }
 
+      const zeroBtn = document.createElement("button");
+      zeroBtn.className = "pin-key-btn";
+      zeroBtn.textContent = "0";
+      zeroBtn.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        if ((element.text || "").length < len) {
+          element.text = (element.text || "") + "0";
+          renderCanvas();
+          checkPinComplete(element);
         }
-      );
+      });
+      keypad.appendChild(zeroBtn);
 
+      const delBtn = document.createElement("button");
+      delBtn.className = "pin-key-btn";
+      delBtn.textContent = "⌫";
+      delBtn.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        element.text = (element.text || "").slice(0, -1);
+        renderCanvas();
+      });
+      keypad.appendChild(delBtn);
+
+      node.appendChild(keypad);
     } else {
-
-      input.addEventListener(
-        "input",
-        event => {
-
-          element.text =
-            event.target.value;
-
-          pushHistory();
-
-        }
-      );
-
+      const info = document.createElement("div");
+      info.style.fontSize = "10px";
+      info.style.color = "#94a3b8";
+      info.textContent = `PIN Keypad (${len} Hane)`;
+      node.appendChild(info);
     }
-
-    node.appendChild(input);
 
   }
 
@@ -2266,6 +2410,53 @@ function createElementNode(element) {
     node.textContent = formatTimeDisplay(initialSec);
 
     startTimerClock(element, node);
+
+  }
+
+
+  /* OS DIALOG & ALERT BOX ELEMENTI */
+
+  else if (element.type === "osDialog") {
+
+    node.classList.add("el-os-dialog");
+
+    const header = document.createElement("div");
+    header.className = "el-os-dialog-header";
+    header.textContent = element.dialogTitle || "Sistem Uyarısı";
+
+    const body = document.createElement("div");
+    body.className = "el-os-dialog-body";
+    body.textContent = element.dialogMessage || "Bu işlemi gerçekleştirmek istiyor musunuz?";
+
+    const actions = document.createElement("div");
+    actions.className = "el-os-dialog-actions";
+
+    const btnCancel = document.createElement("button");
+    btnCancel.className = "el-os-dialog-btn cancel";
+    btnCancel.textContent = element.btnCancelText || "İptal";
+
+    const btnConfirm = document.createElement("button");
+    btnConfirm.className = "el-os-dialog-btn confirm";
+    btnConfirm.textContent = element.btnConfirmText || "Tamam";
+
+    if (previewMode) {
+      btnCancel.addEventListener("click", event => {
+        event.stopPropagation();
+        runEvent(element, "dialogCancel");
+      });
+
+      btnConfirm.addEventListener("click", event => {
+        event.stopPropagation();
+        runEvent(element, "dialogConfirm");
+      });
+    }
+
+    actions.appendChild(btnCancel);
+    actions.appendChild(btnConfirm);
+
+    node.appendChild(header);
+    node.appendChild(body);
+    node.appendChild(actions);
 
   }
 
@@ -3178,9 +3369,9 @@ function renderAddPanel() {
 
       <button
         class="element-item"
-        onclick="addElement('password')"
+        onclick="addElement('pin')"
       >
-        🔑 Şifre
+        🔑 PIN Kodu
       </button>
 
       <button
@@ -3188,6 +3379,13 @@ function renderAddPanel() {
         onclick="addElement('timer')"
       >
         ⏱️ Zaman Sayacı
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('osDialog')"
+      >
+        💬 OS Dialog
       </button>
 
       <button
@@ -3739,21 +3937,35 @@ function renderEditPanel() {
   }
 
 
-  /* PASSWORD AYARLARI */
+  /* PIN AYARLARI */
 
   if (
-    e.type === "password"
+    e.type === "pin"
   ) {
 
     html += `
 
-      <div class="field full">
+      <div class="field">
 
-        <label>Doğru Şifre (Anahtar Değer)</label>
+        <label>Doğru PIN Kodu</label>
 
         <input
           value="${escapeAttr(e.value || "1234")}"
           onchange="updateSelected('value', this.value)"
+        >
+
+      </div>
+
+      <div class="field">
+
+        <label>PIN Uzunluğu (Hane)</label>
+
+        <input
+          type="number"
+          min="4"
+          max="6"
+          value="${e.pinLength ?? 4}"
+          onchange="updateSelected('pinLength', this.value)"
         >
 
       </div>
@@ -3805,12 +4017,69 @@ function renderEditPanel() {
                 type="number"
                 value="${e.targetSeconds ?? 60}"
                 onchange="updateSelected('targetSeconds', this.value)"
-              >
+              />
 
             </div>
           `
           : ""
       }
+
+    `;
+
+  }
+
+
+  /* OS DIALOG AYARLARI */
+
+  if (
+    e.type === "osDialog"
+  ) {
+
+    html += `
+
+      <div class="field full">
+
+        <label>Pencere Başlığı</label>
+
+        <input
+          value="${escapeAttr(e.dialogTitle || "Sistem Uyarısı")}"
+          onchange="updateSelected('dialogTitle', this.value)"
+        >
+
+      </div>
+
+      <div class="field full">
+
+        <label>Mesaj / Açıklama</label>
+
+        <input
+          value="${escapeAttr(e.dialogMessage || "Bu işlemi gerçekleştirmek istiyor musunuz?")}"
+          onchange="updateSelected('dialogMessage', this.value)"
+        >
+
+      </div>
+
+      <div class="field">
+
+        <label>Sol Buton (İptal)</label>
+
+        <input
+          value="${escapeAttr(e.btnCancelText || "İptal")}"
+          onchange="updateSelected('btnCancelText', this.value)"
+        >
+
+      </div>
+
+      <div class="field">
+
+        <label>Sağ Buton (Tamam)</label>
+
+        <input
+          value="${escapeAttr(e.btnConfirmText || "Tamam")}"
+          onchange="updateSelected('btnConfirmText', this.value)"
+        >
+
+      </div>
 
     `;
 
@@ -4434,28 +4703,28 @@ function renderEventsPanel() {
               }
 
               ${
-                e.type === "password"
+                e.type === "pin"
                   ? `
                     <option
-                      value="correctPassword"
+                      value="correctPin"
                       ${
-                        event.trigger === "correctPassword"
+                        event.trigger === "correctPin"
                           ? "selected"
                           : ""
                       }
                     >
-                      Şifre Doğru Girildiğinde
+                      Doğru PIN Girildiğinde
                     </option>
 
                     <option
-                      value="wrongPassword"
+                      value="wrongPin"
                       ${
-                        event.trigger === "wrongPassword"
+                        event.trigger === "wrongPin"
                           ? "selected"
                           : ""
                       }
                     >
-                      Şifre Yanlış / Değişirken
+                      Yanlış PIN Girildiğinde
                     </option>
                   `
                   : ""
@@ -4473,6 +4742,34 @@ function renderEventsPanel() {
                       }
                     >
                       Süre Dolduğunda / Hedefe Ulaşıldığında
+                    </option>
+                  `
+                  : ""
+              }
+
+              ${
+                e.type === "osDialog"
+                  ? `
+                    <option
+                      value="dialogConfirm"
+                      ${
+                        event.trigger === "dialogConfirm"
+                          ? "selected"
+                          : ""
+                      }
+                    >
+                      Onay (Sağ Buton) Tıklandığında
+                    </option>
+
+                    <option
+                      value="dialogCancel"
+                      ${
+                        event.trigger === "dialogCancel"
+                          ? "selected"
+                          : ""
+                      }
+                    >
+                      İptal (Sol Buton) Tıklandığında
                     </option>
                   `
                   : ""
@@ -4946,7 +5243,8 @@ function getElementOptions(
           element.type === "button" ||
           element.type === "heading" ||
           element.type === "label" ||
-          element.type === "badge"
+          element.type === "badge" ||
+          element.type === "osDialog"
         );
 
       }
@@ -4966,7 +5264,9 @@ function getElementOptions(
             (
               element.type === "switch"
                 ? "Switch"
-                : element.id
+                : element.type === "osDialog"
+                  ? (element.dialogTitle || "OS Dialog")
+                  : element.id
             )
           )}
         </option>
@@ -5145,13 +5445,13 @@ function addElement(type) {
   }
 
 
-  if (type === "password") {
+  if (type === "pin") {
 
-    element.w = 220;
-    element.h = 45;
-    element.placeholder = "Şifre girin...";
-    element.value = "1234"; // Doğru şifre
-    element.text = ""; // Girilen değer
+    element.w = 170;
+    element.h = 240;
+    element.value = "1234"; // Doğru PIN
+    element.pinLength = 4;
+    element.text = ""; // Girilen PIN
 
   }
 
@@ -5160,9 +5460,21 @@ function addElement(type) {
 
     element.w = 140;
     element.h = 45;
-    element.timerSeconds = 60; // 60 saniyeden başla
-    element.timerMode = "down"; // "down" = geri sayım, "up" = ileri sayım
+    element.timerSeconds = 60;
+    element.timerMode = "down";
     element.targetSeconds = 60;
+
+  }
+
+
+  if (type === "osDialog") {
+
+    element.w = 260;
+    element.h = 140;
+    element.dialogTitle = "Sistem Uyarısı";
+    element.dialogMessage = "Bu işlemi gerçekleştirmek istiyor musunuz?";
+    element.btnCancelText = "İptal";
+    element.btnConfirmText = "Tamam";
 
   }
 
@@ -5508,18 +5820,14 @@ function updateSelected(
       "shadow",
       "autoHideSeconds",
       "timerSeconds",
-      "targetSeconds"
+      "targetSeconds",
+      "pinLength"
     ].includes(property)
   ) {
 
     value =
       Number(value);
 
-  }
-
-
-  if (property === "value" && selectedElement.type !== "password") {
-    value = Number(value);
   }
 
 
@@ -5761,11 +6069,13 @@ function addEvent() {
         ? "timerEnd"
         : selectedElement.type === "switch"
           ? "switchOn"
-          : selectedElement.type === "password"
-            ? "correctPassword"
+          : selectedElement.type === "pin"
+            ? "correctPin"
             : selectedElement.type === "timer"
               ? "timeUp"
-              : "click",
+              : selectedElement.type === "osDialog"
+                ? "dialogConfirm"
+                : "click",
 
     actions: []
 
@@ -6028,7 +6338,8 @@ function getDefaultTarget() {
           element.type === "button" ||
           element.type === "heading" ||
           element.type === "label" ||
-          element.type === "badge"
+          element.type === "badge" ||
+          element.type === "osDialog"
         )
     );
 
@@ -6130,8 +6441,11 @@ function executeAction(
 
       if (target) {
 
-        target.text =
-          action.value || "";
+        if (target.type === "osDialog") {
+          target.dialogTitle = action.value || "";
+        } else {
+          target.text = action.value || "";
+        }
 
       }
 
