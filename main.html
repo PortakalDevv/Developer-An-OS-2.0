@@ -300,6 +300,42 @@ button {
   padding: 10px;
   font-family: monospace;
   font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid #1e293b;
+}
+
+.terminal-output {
+  flex: 1;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.terminal-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-top: 1px solid #1e293b;
+  padding-top: 4px;
+  margin-top: 4px;
+}
+
+.terminal-prompt {
+  color: #38bdf8;
+}
+
+.terminal-input {
+  background: transparent;
+  border: 0;
+  color: #4ade80;
+  outline: none;
+  flex: 1;
+  font-family: monospace;
+  font-size: 11px;
 }
 
 .el-checkbox,
@@ -1227,23 +1263,44 @@ textarea {
     0 25px 80px rgba(37,99,235,.2);
 }
 
-/* SCREEN TRANSITION */
+/* SCREEN TRANSITION ANIMATIONS (6 ÇEŞİT) */
 
-.screen-changing {
-  animation: screenChange .18s ease;
+@keyframes animSlide {
+  0% { opacity: 0.2; transform: translateX(30px); }
+  100% { opacity: 1; transform: translateX(0); }
 }
+.screen-changing.anim-slide { animation: animSlide .22s ease; }
 
-@keyframes screenChange {
-  0% {
-    opacity: .2;
-    transform: translateX(20px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
+@keyframes animFade {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
+.screen-changing.anim-fade { animation: animFade .25s ease; }
+
+@keyframes animZoom {
+  0% { opacity: 0; transform: scale(0.85); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.screen-changing.anim-zoom { animation: animZoom .22s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+@keyframes animSlideUp {
+  0% { opacity: 0.2; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.screen-changing.anim-slide-up { animation: animSlideUp .22s ease; }
+
+@keyframes animFlip {
+  0% { opacity: 0; transform: rotateY(-70deg); perspective: 1000px; }
+  100% { opacity: 1; transform: rotateY(0deg); }
+}
+.screen-changing.anim-flip { animation: animFlip .28s ease; transform-style: preserve-3d; }
+
+@keyframes animBounce {
+  0% { opacity: 0; transform: scale(0.6); }
+  60% { opacity: 1; transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.screen-changing.anim-bounce { animation: animBounce .3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
 /* EMPTY */
 
@@ -1546,6 +1603,7 @@ let project = {
       name: "Home",
 
       background: "#111827",
+      transition: "slide",
 
       elements: [
 
@@ -1662,6 +1720,7 @@ let project = {
       name: "Settings",
 
       background: "#0f172a",
+      transition: "fade",
 
       elements: [
 
@@ -2957,9 +3016,40 @@ function createElementNode(element) {
 
     node.classList.add("el-terminal");
 
-    node.textContent =
-      element.text ||
-      "$ devos\n$ ready...";
+    const output = document.createElement("div");
+    output.className = "terminal-output";
+    output.textContent = element.text || "$ devos\n$ ready...";
+    node.appendChild(output);
+
+    if (previewMode) {
+      const inputWrap = document.createElement("div");
+      inputWrap.className = "terminal-input-wrap";
+
+      const prompt = document.createElement("span");
+      prompt.className = "terminal-prompt";
+      prompt.textContent = ">";
+      inputWrap.appendChild(prompt);
+
+      const input = document.createElement("input");
+      input.className = "terminal-input";
+      input.type = "text";
+      input.placeholder = "Komut yazın...";
+
+      input.addEventListener("keydown", (ev) => {
+        ev.stopPropagation();
+        if (ev.key === "Enter") {
+          const cmd = input.value.trim();
+          output.textContent += `\n> ${cmd}`;
+          input.value = "";
+          output.scrollTop = output.scrollHeight;
+
+          runEvent(element, "commandMatch", cmd);
+        }
+      });
+
+      inputWrap.appendChild(input);
+      node.appendChild(inputWrap);
+    }
 
   }
 
@@ -3613,6 +3703,17 @@ function renderEditPanel() {
           >
         </div>
         <div class="field full">
+          <label>Geçiş Animasyonu (Transition)</label>
+          <select onchange="updateScreenTransition(this.value)">
+            <option value="slide" ${screen.transition === "slide" || !screen.transition ? "selected" : ""}>Sağdan Kayma (Slide)</option>
+            <option value="fade" ${screen.transition === "fade" ? "selected" : ""}>Solarak Geçiş (Fade)</option>
+            <option value="zoom" ${screen.transition === "zoom" ? "selected" : ""}>Yakınlaşarak Açılma (Zoom)</option>
+            <option value="slide-up" ${screen.transition === "slide-up" ? "selected" : ""}>Aşağıdan Kayma (Slide Up)</option>
+            <option value="flip" ${screen.transition === "flip" ? "selected" : ""}>3D Flip</option>
+            <option value="bounce" ${screen.transition === "bounce" ? "selected" : ""}>Esnek Giriş (Bounce)</option>
+          </select>
+        </div>
+        <div class="field full">
           <label>Arka Plan Resmi</label>
           <button
             class="secondary-btn"
@@ -3719,7 +3820,7 @@ function renderEditPanel() {
     html += `
 
       <div class="field full">
-        <label>Metin</label>
+        <label>${e.type === "terminal" ? "Terminal Çıktısı / Başlangıç Metni" : "Metin"}</label>
 
         <input
           value="${escapeAttr(e.text || "")}"
@@ -4731,6 +4832,23 @@ function renderEventsPanel() {
               }
 
               ${
+                e.type === "terminal"
+                  ? `
+                    <option
+                      value="commandMatch"
+                      ${
+                        event.trigger === "commandMatch"
+                          ? "selected"
+                          : ""
+                      }
+                    >
+                      Komut Eşleştiğinde (Command Match)
+                    </option>
+                  `
+                  : ""
+              }
+
+              ${
                 e.type === "timer"
                   ? `
                     <option
@@ -4782,6 +4900,20 @@ function renderEventsPanel() {
       `;
 
 
+      if (event.trigger === "commandMatch") {
+        html += `
+          <div class="field">
+            <label>Eşleşecek Komut / Metin</label>
+            <input
+              value="${escapeAttr(event.command || "")}"
+              onchange="updateEventCommand(${eventIndex}, this.value)"
+              placeholder="Örn: help, clear, start..."
+            >
+          </div>
+        `;
+      }
+
+
       if (!event.actions) {
 
         event.actions = [];
@@ -4822,6 +4954,17 @@ function renderEventsPanel() {
                     }
                   >
                     Metin değiştir
+                  </option>
+
+                  <option
+                    value="printTerminal"
+                    ${
+                      action.type === "printTerminal"
+                        ? "selected"
+                        : ""
+                    }
+                  >
+                    Terminale Yazı Yaz
                   </option>
 
                   <option
@@ -4962,6 +5105,59 @@ function renderEventsPanel() {
                       this.value
                     )
                   "
+                >
+
+              </div>
+
+            `;
+
+          }
+
+
+          if (
+            action.type === "printTerminal"
+          ) {
+
+            html += `
+
+              <div class="field">
+
+                <label>Hedef Terminal</label>
+
+                <select
+                  onchange="
+                    updateActionValue(
+                      ${eventIndex},
+                      ${actionIndex},
+                      'target',
+                      this.value
+                    )
+                  "
+                >
+
+                  ${getTerminalOptions(
+                    action.target
+                  )}
+
+                </select>
+
+              </div>
+
+              <div class="field">
+
+                <label>Yazdırılacak Yanıt / Metin</label>
+
+                <input
+                  value="${escapeAttr(action.value || "")}"
+                  onchange="
+                    updateActionValue(
+                      ${eventIndex},
+                      ${actionIndex},
+                      'value',
+                      this.value
+                    )
+                  "
+                  placeholder="Örn: Komut başarıyla çalıştırıldı."
                 >
 
               </div>
@@ -5277,6 +5473,25 @@ function getElementOptions(
 }
 
 
+function getTerminalOptions(selected) {
+  const screen = getCurrentScreen();
+
+  return screen.elements
+    .filter(element => element.type === "terminal")
+    .map(
+      element => `
+        <option
+          value="${escapeAttr(element.id)}"
+          ${element.id === selected ? "selected" : ""}
+        >
+          Terminal (${escapeHtml(element.id)})
+        </option>
+      `
+    )
+    .join("");
+}
+
+
 /* =========================================================
    SCREEN OPTIONS
 ========================================================= */
@@ -5348,7 +5563,7 @@ function addElement(type) {
             : type === "button"
               ? "Yeni buton"
               : type === "terminal"
-                ? "$ devos"
+                ? "$ devos\n$ ready..."
                 : type === "textarea"
                   ? ""
                   : type === "checkbox"
@@ -5452,6 +5667,15 @@ function addElement(type) {
     element.value = "1234"; // Doğru PIN
     element.pinLength = 4;
     element.text = ""; // Girilen PIN
+
+  }
+
+
+  if (type === "terminal") {
+
+    element.w = 300;
+    element.h = 160;
+    element.text = "$ devos\n$ ready...";
 
   }
 
@@ -5645,14 +5869,6 @@ function addElement(type) {
     element.h = 55;
 
     element.y = 680;
-
-  }
-
-
-  if (type === "terminal") {
-
-    element.w = 300;
-    element.h = 130;
 
   }
 
@@ -6071,11 +6287,15 @@ function addEvent() {
           ? "switchOn"
           : selectedElement.type === "pin"
             ? "correctPin"
-            : selectedElement.type === "timer"
-              ? "timeUp"
-              : selectedElement.type === "osDialog"
-                ? "dialogConfirm"
-                : "click",
+            : selectedElement.type === "terminal"
+              ? "commandMatch"
+              : selectedElement.type === "timer"
+                ? "timeUp"
+                : selectedElement.type === "osDialog"
+                  ? "dialogConfirm"
+                  : "click",
+
+    command: selectedElement.type === "terminal" ? "help" : "",
 
     actions: []
 
@@ -6115,10 +6335,26 @@ function updateEventTrigger(
     .trigger =
     trigger;
 
+  if (trigger === "commandMatch" && !selectedElement.events[index].command) {
+    selectedElement.events[index].command = "help";
+  }
+
 
   pushHistory();
 
   renderPanel();
+
+}
+
+
+function updateEventCommand(
+  index,
+  command
+) {
+
+  selectedElement.events[index].command = command;
+
+  pushHistory();
 
 }
 
@@ -6130,17 +6366,23 @@ function addAction(
   const action = {
 
     type:
-      selectedElement.type === "switch"
-        ? "toggleSwitch"
-        : "setText",
+      selectedElement.type === "terminal"
+        ? "printTerminal"
+        : selectedElement.type === "switch"
+          ? "toggleSwitch"
+          : "setText",
 
     target:
-      selectedElement.type === "switch"
+      selectedElement.type === "terminal"
         ? selectedElement.id
-        : getDefaultTarget(),
+        : selectedElement.type === "switch"
+          ? selectedElement.id
+          : getDefaultTarget(),
 
     value:
-      "Merhaba!"
+      selectedElement.type === "terminal"
+        ? "Komut çalıştırıldı."
+        : "Merhaba!"
 
   };
 
@@ -6202,6 +6444,22 @@ function changeActionType(
 
     action.value =
       "Yeni metin";
+
+    delete action.screen;
+    delete action.title;
+
+  }
+
+
+  if (type === "printTerminal") {
+
+    action.target =
+      selectedElement.type === "terminal"
+        ? selectedElement.id
+        : getDefaultTerminalTarget();
+
+    action.value =
+      "Komut yanıtı burada gözükecek.";
 
     delete action.screen;
     delete action.title;
@@ -6371,13 +6629,34 @@ function getDefaultSwitchTarget() {
 }
 
 
+function getDefaultTerminalTarget() {
+
+  const screen =
+    getCurrentScreen();
+
+
+  const target =
+    screen.elements.find(
+      element =>
+        element.type === "terminal"
+    );
+
+
+  return target
+    ? target.id
+    : "";
+
+}
+
+
 /* =========================================================
    RUN EVENT
 ========================================================= */
 
 function runEvent(
   element,
-  trigger
+  trigger,
+  matchValue = null
 ) {
 
   if (!element.events) return;
@@ -6385,8 +6664,13 @@ function runEvent(
 
   const events =
     element.events.filter(
-      event =>
-        event.trigger === trigger
+      event => {
+        if (event.trigger !== trigger) return false;
+        if (trigger === "commandMatch" && matchValue !== null) {
+          return (event.command || "").trim() === matchValue;
+        }
+        return true;
+      }
     );
 
 
@@ -6453,6 +6737,25 @@ function executeAction(
 
 
     renderCanvas();
+
+  }
+
+
+  /* PRINT TO TERMINAL */
+
+  else if (
+    action.type === "printTerminal"
+  ) {
+
+    const targetNode = document.querySelector(`.canvas-element[data-id="${action.target}"] .terminal-output`);
+
+    if (targetNode) {
+
+      targetNode.textContent += `\n${action.value || ""}`;
+
+      targetNode.scrollTop = targetNode.scrollHeight;
+
+    }
 
   }
 
@@ -6692,15 +6995,25 @@ function switchScreen(
 
 
   phoneScreen.classList.remove(
-    "screen-changing"
+    "screen-changing",
+    "anim-slide",
+    "anim-fade",
+    "anim-zoom",
+    "anim-slide-up",
+    "anim-flip",
+    "anim-bounce"
   );
 
 
   void phoneScreen.offsetWidth;
 
 
+  const screen = getCurrentScreen();
+  const anim = screen.transition || "slide";
+
   phoneScreen.classList.add(
-    "screen-changing"
+    "screen-changing",
+    "anim-" + anim
   );
 
 
@@ -6786,6 +7099,8 @@ function createScreen() {
 
     background:
       "#111827",
+
+    transition: "slide",
 
     elements: []
 
@@ -7630,7 +7945,6 @@ renderCanvas =
       element => {
 
         if (element.hidden && !previewMode) {
-          // Düzenleme modunda gizli elementler soluk (hayalet) olarak görünsün ki yönetilebilsin
           const node = createElementNode(element);
           node.style.opacity = "0.35";
           canvas.appendChild(node);
@@ -7659,7 +7973,7 @@ renderCanvas =
 
 
 /* =========================================================
-   SCREEN BACKGROUND FUNCTIONS
+   SCREEN BACKGROUND & TRANSITION FUNCTIONS
 ========================================================= */
 
 function updateScreenBgColor(val) {
@@ -7667,6 +7981,13 @@ function updateScreenBgColor(val) {
   screen.background = val;
   pushHistory();
   renderCanvas();
+}
+
+function updateScreenTransition(val) {
+  const screen = getCurrentScreen();
+  screen.transition = val;
+  pushHistory();
+  toast("Geçiş animasyonu güncellendi");
 }
 
 function selectScreenImage() {
