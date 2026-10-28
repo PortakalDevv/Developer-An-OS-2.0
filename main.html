@@ -8,7 +8,7 @@
   content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
 >
 
-<title>DevOS Mobile Studio v1.47.61</title>
+<title>DevOS Mobile Studio v1.49.0</title>
 
 <style>
 * {
@@ -69,7 +69,7 @@ button {
 .logo-icon {
   width: 32px;
   height: 32px;
-  border-radius: 9px;
+  border-radius: 99px;
   background: #2563eb;
   display: flex;
   align-items: center;
@@ -389,10 +389,76 @@ button {
   left: 25px;
 }
 
-.el-slider {
+/* LIQUID GLASS SLIDER STYLES */
+
+.el-liquid-slider-wrap {
   width: 100%;
   height: 100%;
-  accent-color: #2563eb;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.16),
+      rgba(255,255,255,.05)
+    );
+
+  border: 1px solid rgba(255,255,255,.22);
+
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.25),
+    0 8px 25px rgba(0,0,0,.2);
+}
+
+.el-liquid-slider-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-bottom: 6px;
+  padding: 0 2px;
+}
+
+.el-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  outline: none;
+  cursor: pointer;
+}
+
+.el-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #38bdf8;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+  cursor: pointer;
+  transition: transform .1s;
+}
+
+.el-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.preview-mode .el-slider {
+  pointer-events: auto !important;
 }
 
 .el-badge {
@@ -2649,29 +2715,46 @@ function createElementNode(element) {
   }
 
 
-  /* SLIDER */
+  /* LIQUID GLASS SLIDER */
 
   else if (element.type === "slider") {
 
-    const input =
-      document.createElement("input");
+    const wrap = document.createElement("div");
+    wrap.className = "el-liquid-slider-wrap";
 
-    input.type =
-      "range";
+    const topBar = document.createElement("div");
+    topBar.className = "el-liquid-slider-top";
 
-    input.className =
-      "el-slider";
+    const labelSpan = document.createElement("span");
+    labelSpan.textContent = element.text || "Slider";
 
-    input.min =
-      element.min ?? 0;
+    const valSpan = document.createElement("span");
+    valSpan.textContent = element.value ?? 50;
 
-    input.max =
-      element.max ?? 100;
+    topBar.appendChild(labelSpan);
+    topBar.appendChild(valSpan);
+    wrap.appendChild(topBar);
 
-    input.value =
-      element.value ?? 50;
+    const input = document.createElement("input");
+    input.type = "range";
+    input.className = "el-slider";
+    input.min = element.min ?? 0;
+    input.max = element.max ?? 100;
+    input.value = element.value ?? 50;
 
-    node.appendChild(input);
+    if (previewMode) {
+      input.addEventListener("input", (ev) => {
+        ev.stopPropagation();
+        element.value = Number(ev.target.value);
+        valSpan.textContent = element.value;
+        runEvent(element, "valueMatch", String(element.value));
+      });
+    } else {
+      input.style.pointerEvents = "none";
+    }
+
+    wrap.appendChild(input);
+    node.appendChild(wrap);
 
   }
 
@@ -3198,15 +3281,44 @@ function createElementNode(element) {
   }
 
 
-  /* EVENTS */
+  /* EVENTS & LONG PRESS LOGIC */
 
   if (previewMode) {
+
+    let longPressTimer = null;
+    let isLongPressTriggered = false;
+
+    const startPress = (event) => {
+      isLongPressTriggered = false;
+      clearTimeout(longPressTimer);
+
+      longPressTimer = setTimeout(() => {
+        isLongPressTriggered = true;
+        runEvent(element, "longpress");
+      }, 500);
+    };
+
+    const cancelPress = () => {
+      clearTimeout(longPressTimer);
+    };
+
+    node.addEventListener("mousedown", startPress);
+    node.addEventListener("mouseup", cancelPress);
+    node.addEventListener("mouseleave", cancelPress);
+    node.addEventListener("touchstart", startPress, { passive: true });
+    node.addEventListener("touchend", cancelPress);
+    node.addEventListener("touchcancel", cancelPress);
 
     node.addEventListener(
       "click",
       event => {
 
         event.stopPropagation();
+
+        if (isLongPressTriggered) {
+          isLongPressTriggered = false;
+          return;
+        }
 
         if (
           element.type === "switch"
@@ -3802,6 +3914,7 @@ function renderEditPanel() {
     e.type === "heading" ||
     e.type === "label" ||
     e.type === "button" ||
+    e.type === "slider" ||
     e.type === "terminal" ||
     e.type === "textarea" ||
     e.type === "badge" ||
@@ -3820,7 +3933,7 @@ function renderEditPanel() {
     html += `
 
       <div class="field full">
-        <label>${e.type === "terminal" ? "Terminal Çıktısı / Başlangıç Metni" : "Metin"}</label>
+        <label>${e.type === "slider" ? "Slider Başlığı / Metni" : (e.type === "terminal" ? "Terminal Çıktısı / Başlangıç Metni" : "Metin")}</label>
 
         <input
           value="${escapeAttr(e.text || "")}"
@@ -4519,7 +4632,7 @@ function renderEditPanel() {
       </div>
 
       <div class="field full">
-        <label>Değer</label>
+        <label>Mevcut Değer</label>
 
         <input
           type="number"
@@ -4744,7 +4857,7 @@ function renderEventsPanel() {
                     : ""
                 }
               >
-                Click
+                Click (Tıklama)
               </option>
 
               <option
@@ -4755,8 +4868,36 @@ function renderEventsPanel() {
                     : ""
                 }
               >
-                Double Click
+                Double Click (Çift Tıklama)
               </option>
+
+              <option
+                value="longpress"
+                ${
+                  event.trigger === "longpress"
+                    ? "selected"
+                    : ""
+                }
+              >
+                Long Press (Basılı Tutma)
+              </option>
+
+              ${
+                e.type === "slider"
+                  ? `
+                    <option
+                      value="valueMatch"
+                      ${
+                        event.trigger === "valueMatch"
+                          ? "selected"
+                          : ""
+                      }
+                    >
+                      Sayı Değerine Ulaşıldığında
+                    </option>
+                  `
+                  : ""
+              }
 
               ${
                 e.type === "switch"
@@ -4900,14 +5041,15 @@ function renderEventsPanel() {
       `;
 
 
-      if (event.trigger === "commandMatch") {
+      if (event.trigger === "commandMatch" || event.trigger === "valueMatch") {
         html += `
           <div class="field">
-            <label>Eşleşecek Komut / Metin</label>
+            <label>${event.trigger === "valueMatch" ? "Tetiklenecek Sayısal Değer" : "Eşleşecek Komut / Metin"}</label>
             <input
+              type="${event.trigger === "valueMatch" ? "number" : "text"}"
               value="${escapeAttr(event.command || "")}"
               onchange="updateEventCommand(${eventIndex}, this.value)"
-              placeholder="Örn: help, clear, start..."
+              placeholder="${event.trigger === "valueMatch" ? "Örn: 100" : "Örn: help, clear..."}"
             >
           </div>
         `;
@@ -5440,6 +5582,7 @@ function getElementOptions(
           element.type === "heading" ||
           element.type === "label" ||
           element.type === "badge" ||
+          element.type === "slider" ||
           element.type === "osDialog"
         );
 
@@ -5460,9 +5603,11 @@ function getElementOptions(
             (
               element.type === "switch"
                 ? "Switch"
-                : element.type === "osDialog"
-                  ? (element.dialogTitle || "OS Dialog")
-                  : element.id
+                : element.type === "slider"
+                  ? "Slider"
+                  : element.type === "osDialog"
+                    ? (element.dialogTitle || "OS Dialog")
+                    : element.id
             )
           )}
         </option>
@@ -5562,37 +5707,39 @@ function addElement(type) {
             ? "Yeni etiket"
             : type === "button"
               ? "Yeni buton"
-              : type === "terminal"
-                ? "$ devos\n$ ready..."
-                : type === "textarea"
-                  ? ""
-                  : type === "checkbox"
-                    ? "Checkbox"
-                    : type === "radio"
-                      ? "Radio"
-                      : type === "badge"
-                        ? "Badge"
-                        : type === "avatar"
-                          ? "A"
-                          : type === "scrollview"
-                            ? "ScrollView içeriği"
-                            : type === "modal"
-                              ? "Modal"
-                              : type === "sidebar"
-                                ? "☰\n\nAna Sayfa\n\nUygulamalar\n\nAyarlar"
-                                : type === "liquidGlass"
-                                  ? "Liquid Glass"
-                                  : type === "liquidGlassButton"
-                                    ? "Glass Button"
-                                    : type === "liquidGlassCard"
-                                      ? "Glass Card"
-                                      : type === "liquidGlassNav"
-                                        ? "⌂  Ana Sayfa    Apps    ⚙ Ayarlar"
-                                        : type === "liquidGlassTabbar"
-                                          ? "⌂ Ana Sayfa    ◉ Uygulamalar    ⚙ Ayarlar"
-                                          : type === "liquidGlassModal"
-                                            ? "Glass Modal"
-                                            : "",
+              : type === "slider"
+                ? "Slider"
+                : type === "terminal"
+                  ? "$ devos\n$ ready..."
+                  : type === "textarea"
+                    ? ""
+                    : type === "checkbox"
+                      ? "Checkbox"
+                      : type === "radio"
+                        ? "Radio"
+                        : type === "badge"
+                          ? "Badge"
+                          : type === "avatar"
+                            ? "A"
+                            : type === "scrollview"
+                              ? "ScrollView içeriği"
+                              : type === "modal"
+                                ? "Modal"
+                                : type === "sidebar"
+                                  ? "☰\n\nAna Sayfa\n\nUygulamalar\n\nAyarlar"
+                                  : type === "liquidGlass"
+                                    ? "Liquid Glass"
+                                    : type === "liquidGlassButton"
+                                      ? "Glass Button"
+                                      : type === "liquidGlassCard"
+                                        ? "Glass Card"
+                                        : type === "liquidGlassNav"
+                                          ? "⌂  Ana Sayfa    Apps    ⚙ Ayarlar"
+                                          : type === "liquidGlassTabbar"
+                                            ? "⌂ Ana Sayfa    ◉ Uygulamalar    ⚙ Ayarlar"
+                                            : type === "liquidGlassModal"
+                                              ? "Glass Modal"
+                                              : "",
 
     color: "#ffffff",
 
@@ -5664,9 +5811,9 @@ function addElement(type) {
 
     element.w = 170;
     element.h = 240;
-    element.value = "1234"; // Doğru PIN
+    element.value = "1234";
     element.pinLength = 4;
-    element.text = ""; // Girilen PIN
+    element.text = "";
 
   }
 
@@ -5738,7 +5885,8 @@ function addElement(type) {
   if (type === "slider") {
 
     element.w = 280;
-    element.h = 35;
+    element.h = 60;
+    element.text = "Ses Seviyesi";
 
   }
 
@@ -6028,6 +6176,7 @@ function updateSelected(
       "imageSize",
       "min",
       "max",
+      "value",
       "glassOpacity",
       "blur",
       "saturation",
@@ -6281,21 +6430,23 @@ function addEvent() {
   selectedElement.events.push({
 
     trigger:
-      selectedElement.type === "spinner"
-        ? "timerEnd"
-        : selectedElement.type === "switch"
-          ? "switchOn"
-          : selectedElement.type === "pin"
-            ? "correctPin"
-            : selectedElement.type === "terminal"
-              ? "commandMatch"
-              : selectedElement.type === "timer"
-                ? "timeUp"
-                : selectedElement.type === "osDialog"
-                  ? "dialogConfirm"
-                  : "click",
+      selectedElement.type === "slider"
+        ? "valueMatch"
+        : selectedElement.type === "spinner"
+          ? "timerEnd"
+          : selectedElement.type === "switch"
+            ? "switchOn"
+            : selectedElement.type === "pin"
+              ? "correctPin"
+              : selectedElement.type === "terminal"
+                ? "commandMatch"
+                : selectedElement.type === "timer"
+                  ? "timeUp"
+                  : selectedElement.type === "osDialog"
+                    ? "dialogConfirm"
+                    : "click",
 
-    command: selectedElement.type === "terminal" ? "help" : "",
+    command: selectedElement.type === "terminal" ? "help" : (selectedElement.type === "slider" ? "100" : ""),
 
     actions: []
 
@@ -6337,6 +6488,10 @@ function updateEventTrigger(
 
   if (trigger === "commandMatch" && !selectedElement.events[index].command) {
     selectedElement.events[index].command = "help";
+  }
+
+  if (trigger === "valueMatch" && !selectedElement.events[index].command) {
+    selectedElement.events[index].command = "100";
   }
 
 
@@ -6597,6 +6752,7 @@ function getDefaultTarget() {
           element.type === "heading" ||
           element.type === "label" ||
           element.type === "badge" ||
+          element.type === "slider" ||
           element.type === "osDialog"
         )
     );
@@ -6666,8 +6822,8 @@ function runEvent(
     element.events.filter(
       event => {
         if (event.trigger !== trigger) return false;
-        if (trigger === "commandMatch" && matchValue !== null) {
-          return (event.command || "").trim() === matchValue;
+        if ((trigger === "commandMatch" || trigger === "valueMatch") && matchValue !== null) {
+          return String(event.command || "").trim() === String(matchValue).trim();
         }
         return true;
       }
