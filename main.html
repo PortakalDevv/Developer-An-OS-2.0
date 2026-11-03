@@ -8,7 +8,12 @@
   content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
 >
 
-<title>DevOS Mobile Studio v1.49.0</title>
+<title>DevOS Mobile Studio v1.54.0</title>
+
+<!-- GOOGLE FONTS 12 ÇEŞİT -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@600&family=Dancing+Script:wght@700&family=Fira+Code:wght@500&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@500&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Poppins:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
 * {
@@ -22,7 +27,7 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
   background: #080b12;
   color: #fff;
 }
@@ -86,7 +91,7 @@ button {
   color: white;
   background: #182131;
   padding: 8px 10px;
-  border-radius: 9px;
+  border-radius: 99px;
   font-size: 12px;
 }
 
@@ -249,12 +254,23 @@ button {
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px;
+}
+
+.el-progress-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #94a3b8;
+  font-weight: 600;
 }
 
 .el-progress {
   width: 100%;
-  height: 8px;
+  height: 10px;
   background: #263244;
   border-radius: 99px;
   overflow: hidden;
@@ -264,6 +280,7 @@ button {
   height: 100%;
   background: #2563eb;
   border-radius: 99px;
+  transition: width 0.1s linear;
 }
 
 .el-nav {
@@ -387,6 +404,43 @@ button {
 
 .el-switch.on .el-switch-thumb {
   left: 25px;
+}
+
+/* MIUI STYLE TOGGLE (CONTROL CENTER TILE) */
+.el-miui-toggle {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 20px;
+  padding: 8px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.miui-toggle-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  transition: background 0.2s;
+}
+
+.miui-toggle-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
 }
 
 /* LIQUID GLASS SLIDER STYLES */
@@ -1329,7 +1383,7 @@ textarea {
     0 25px 80px rgba(37,99,235,.2);
 }
 
-/* SCREEN TRANSITION ANIMATIONS (6 ÇEŞİT) */
+/* SCREEN TRANSITION ANIMATIONS */
 
 @keyframes animSlide {
   0% { opacity: 0.2; transform: translateX(30px); }
@@ -1678,100 +1732,40 @@ let project = {
           type: "text",
 
           x: 20,
-          y: 70,
+          y: 60,
+          w: 300,
+          h: 40,
+
+          text: "Progress Örneği",
+
+          color: "#ffffff",
+          fontSize: 22,
+          fontFamily: "Inter",
+
+          events: []
+        },
+
+        {
+          id: "main_progress",
+          type: "progress",
+
+          x: 20,
+          y: 130,
           w: 300,
           h: 45,
 
-          text: "DevOS",
-
-          color: "#ffffff",
-          fontSize: 28,
-
-          events: []
-        },
-
-        {
-          id: "subtitle_01",
-          type: "text",
-
-          x: 20,
-          y: 120,
-          w: 300,
-          h: 35,
-
-          text: "Mobile OS Studio",
-
-          color: "#94a3b8",
-          fontSize: 14,
-
-          events: []
-        },
-
-        {
-          id: "settings_button",
-          type: "button",
-
-          x: 20,
-          y: 190,
-          w: 160,
-          h: 50,
-
-          text: "Ayarlar",
-
-          color: "#ffffff",
+          value: 0,
+          targetValue: 100,
+          duration: 3,
           background: "#2563eb",
 
-          fontSize: 14,
-          radius: 12,
-
-          image: "",
-          imagePosition: "left",
-          imageSize: 24,
-
           events: [
             {
-              trigger: "click",
-
+              trigger: "progressComplete",
               actions: [
                 {
-                  type: "navigate",
-                  screen: "Settings"
-                }
-              ]
-            }
-          ]
-        },
-
-        {
-          id: "hello_button",
-          type: "button",
-
-          x: 20,
-          y: 255,
-          w: 160,
-          h: 50,
-
-          text: "Merhaba",
-
-          color: "#ffffff",
-          background: "#16a34a",
-
-          fontSize: 14,
-          radius: 12,
-
-          image: "",
-          imagePosition: "left",
-          imageSize: 24,
-
-          events: [
-            {
-              trigger: "click",
-
-              actions: [
-                {
-                  type: "setText",
-                  target: "title_01",
-                  value: "Merhaba!"
+                  type: "toast",
+                  value: "İşlem Tamamlandı! (%100)"
                 }
               ]
             }
@@ -1803,43 +1797,9 @@ let project = {
 
           color: "#ffffff",
           fontSize: 25,
+          fontFamily: "Inter",
 
           events: []
-        },
-
-        {
-          id: "back_button",
-          type: "button",
-
-          x: 20,
-          y: 140,
-          w: 150,
-          h: 50,
-
-          text: "Geri",
-
-          color: "#ffffff",
-          background: "#475569",
-
-          fontSize: 14,
-          radius: 12,
-
-          image: "",
-          imagePosition: "left",
-          imageSize: 24,
-
-          events: [
-            {
-              trigger: "click",
-
-              actions: [
-                {
-                  type: "navigate",
-                  screen: "Home"
-                }
-              ]
-            }
-          ]
         }
 
       ]
@@ -1870,6 +1830,8 @@ let clipboard = null;
 const spinnerTimers = {};
 
 const activeClockIntervals = {};
+
+const activeProgressAnimations = {};
 
 
 /* =========================================================
@@ -2068,6 +2030,10 @@ function applyLiquidGlassStyles(
   node.style.fontSize =
     (element.fontSize || 14) + "px";
 
+  if (element.fontFamily) {
+    node.style.fontFamily = `'${element.fontFamily}', sans-serif`;
+  }
+
   node.style.borderRadius =
     (element.radius ?? 18) + "px";
 
@@ -2168,6 +2134,61 @@ function startSpinnerTimer(element) {
 
 
 /* =========================================================
+   PROGRESS ANIMATION HELPER
+========================================================= */
+
+function startProgressAnimation(element, barNode, infoNode) {
+  if (!previewMode || element.type !== "progress") return;
+
+  clearInterval(activeProgressAnimations[element.id]);
+
+  const targetVal = Number(element.targetValue ?? 100);
+  const durationSec = Number(element.duration ?? 3);
+  
+  let currentVal = 0;
+  element.value = 0;
+  
+  if (infoNode) infoNode.textContent = `%0 / %${targetVal}`;
+  if (barNode) barNode.style.width = "0%";
+
+  if (durationSec <= 0 || targetVal <= 0) {
+    element.value = targetVal;
+    if (barNode) barNode.style.width = Math.min(100, targetVal) + "%";
+    if (infoNode) infoNode.textContent = `%${targetVal} / %${targetVal}`;
+    runEvent(element, "progressComplete");
+    return;
+  }
+
+  const fps = 30;
+  const totalFrames = durationSec * fps;
+  const increment = targetVal / totalFrames;
+  let frame = 0;
+
+  activeProgressAnimations[element.id] = setInterval(() => {
+    frame++;
+    currentVal += increment;
+
+    if (frame >= totalFrames || currentVal >= targetVal) {
+      currentVal = targetVal;
+      clearInterval(activeProgressAnimations[element.id]);
+      delete activeProgressAnimations[element.id];
+      
+      element.value = currentVal;
+      if (barNode) barNode.style.width = Math.min(100, currentVal) + "%";
+      if (infoNode) infoNode.textContent = `%${Math.round(currentVal)} / %${targetVal}`;
+      
+      runEvent(element, "progressComplete");
+      return;
+    }
+
+    element.value = currentVal;
+    if (barNode) barNode.style.width = Math.min(100, (currentVal / targetVal) * 100) + "%";
+    if (infoNode) infoNode.textContent = `%${Math.round(currentVal)} / %${targetVal}`;
+  }, 1000 / fps);
+}
+
+
+/* =========================================================
    CREATE ELEMENT NODE
 ========================================================= */
 
@@ -2250,6 +2271,11 @@ function createElementNode(element) {
 
   node.style.height =
     element.h + "px";
+
+
+  if (element.fontFamily) {
+    node.style.fontFamily = `'${element.fontFamily}', sans-serif`;
+  }
 
 
   if (
@@ -2448,6 +2474,10 @@ function createElementNode(element) {
     input.placeholder =
       element.placeholder || "Metin gir...";
 
+    if (element.fontFamily) {
+      input.style.fontFamily = `'${element.fontFamily}', sans-serif`;
+    }
+
     node.appendChild(input);
 
   }
@@ -2602,6 +2632,10 @@ function createElementNode(element) {
     textarea.value =
       element.text || "";
 
+    if (element.fontFamily) {
+      textarea.style.fontFamily = `'${element.fontFamily}', sans-serif`;
+    }
+
     node.appendChild(textarea);
 
   }
@@ -2674,6 +2708,33 @@ function createElementNode(element) {
     switchNode.appendChild(track);
 
     node.appendChild(switchNode);
+
+  }
+
+
+  /* MIUI TOGGLE ELEMENTI (WIFI / MOBIL VERI TARZI KUTUCUK) */
+
+  else if (element.type === "miuiToggle") {
+
+    const wrap = document.createElement("div");
+    wrap.className = "el-miui-toggle";
+    
+    const isChecked = !!element.checked;
+    wrap.style.background = isChecked ? (element.activeBg || "#2563eb") : (element.inactiveBg || "#1e293b");
+    wrap.style.color = isChecked ? (element.activeColor || "#ffffff") : (element.inactiveColor || "#94a3b8");
+
+    const iconDiv = document.createElement("div");
+    iconDiv.className = "miui-toggle-icon";
+    iconDiv.style.background = isChecked ? "rgba(255, 255, 255, 0.25)" : "rgba(255, 255, 255, 0.1)";
+    iconDiv.textContent = element.icon || "📶";
+
+    const labelDiv = document.createElement("div");
+    labelDiv.className = "miui-toggle-label";
+    labelDiv.textContent = element.text || "Wi-Fi";
+
+    wrap.appendChild(iconDiv);
+    wrap.appendChild(labelDiv);
+    node.appendChild(wrap);
 
   }
 
@@ -2801,6 +2862,13 @@ function createElementNode(element) {
     wrap.className =
       "el-progress-wrap";
 
+    const info = document.createElement("div");
+    info.className = "el-progress-info";
+    const currentVal = Math.round(element.value || 0);
+    const targetVal = Number(element.targetValue ?? 100);
+    info.innerHTML = `<span>İlerleme</span><span>%${currentVal} / %${targetVal}</span>`;
+    wrap.appendChild(info);
+
     const progress =
       document.createElement("div");
 
@@ -2813,14 +2881,15 @@ function createElementNode(element) {
     bar.className =
       "el-progress-bar";
 
-    bar.style.width =
-      (element.value || 50) + "%";
+    bar.style.background = element.background || "#2563eb";
+    const pct = targetVal > 0 ? Math.min(100, (currentVal / targetVal) * 100) : 0;
+    bar.style.width = pct + "%";
 
     progress.appendChild(bar);
-
     wrap.appendChild(progress);
-
     node.appendChild(wrap);
+
+    startProgressAnimation(element, bar, info);
 
   }
 
@@ -3137,9 +3206,7 @@ function createElementNode(element) {
   }
 
 
-  /* =======================================================
-     LIQUID GLASS PANEL
-  ======================================================= */
+  /* LIQUID GLASS PANELS */
 
   else if (
     element.type === "liquidGlass"
@@ -3160,11 +3227,6 @@ function createElementNode(element) {
 
   }
 
-
-  /* =======================================================
-     LIQUID GLASS BUTTON
-  ======================================================= */
-
   else if (
     element.type === "liquidGlassButton"
   ) {
@@ -3183,11 +3245,6 @@ function createElementNode(element) {
     );
 
   }
-
-
-  /* =======================================================
-     LIQUID GLASS CARD
-  ======================================================= */
 
   else if (
     element.type === "liquidGlassCard"
@@ -3208,11 +3265,6 @@ function createElementNode(element) {
 
   }
 
-
-  /* =======================================================
-     LIQUID GLASS NAV
-  ======================================================= */
-
   else if (
     element.type === "liquidGlassNav"
   ) {
@@ -3232,11 +3284,6 @@ function createElementNode(element) {
 
   }
 
-
-  /* =======================================================
-     LIQUID GLASS TABBAR
-  ======================================================= */
-
   else if (
     element.type === "liquidGlassTabbar"
   ) {
@@ -3255,11 +3302,6 @@ function createElementNode(element) {
     );
 
   }
-
-
-  /* =======================================================
-     LIQUID GLASS MODAL
-  ======================================================= */
 
   else if (
     element.type === "liquidGlassModal"
@@ -3334,6 +3376,26 @@ function createElementNode(element) {
             element.checked
               ? "switchOn"
               : "switchOff"
+          );
+
+          return;
+
+        }
+
+        if (
+          element.type === "miuiToggle"
+        ) {
+
+          element.checked =
+            !element.checked;
+
+          renderCanvas();
+
+          runEvent(
+            element,
+            element.checked
+              ? "toggleOn"
+              : "toggleOff"
           );
 
           return;
@@ -3560,6 +3622,13 @@ function renderAddPanel() {
         onclick="addElement('button')"
       >
         ▣ Buton
+      </button>
+
+      <button
+        class="element-item"
+        onclick="addElement('miuiToggle')"
+      >
+        🔘 MIUI Toggle
       </button>
 
       <button
@@ -3946,6 +4015,103 @@ function renderEditPanel() {
   }
 
 
+  if (e.type === "miuiToggle") {
+
+    html += `
+
+      <div class="field">
+        <label>Buton Adı</label>
+        <input
+          value="${escapeAttr(e.text || "Wi-Fi")}"
+          onchange="updateSelected('text', this.value)"
+        >
+      </div>
+
+      <div class="field">
+        <label>İkon (Emoji / Sembol)</label>
+        <input
+          value="${escapeAttr(e.icon || "📶")}"
+          onchange="updateSelected('icon', this.value)"
+        >
+      </div>
+
+      <div class="field">
+        <label>Açık Arka Plan Rengi</label>
+        <input
+          type="color"
+          value="${e.activeBg || "#2563eb"}"
+          onchange="updateSelected('activeBg', this.value)"
+        >
+      </div>
+
+      <div class="field">
+        <label>Kapalı Arka Plan Rengi</label>
+        <input
+          type="color"
+          value="${e.inactiveBg || "#1e293b"}"
+          onchange="updateSelected('inactiveBg', this.value)"
+        >
+      </div>
+
+      <div class="field">
+        <label>Açık Yazı/İkon Rengi</label>
+        <input
+          type="color"
+          value="${e.activeColor || "#ffffff"}"
+          onchange="updateSelected('activeColor', this.value)"
+        >
+      </div>
+
+      <div class="field">
+        <label>Kapalı Yazı/İkon Rengi</label>
+        <input
+          type="color"
+          value="${e.inactiveColor || "#94a3b8"}"
+          onchange="updateSelected('inactiveColor', this.value)"
+        >
+      </div>
+
+    `;
+
+  }
+
+
+  if (
+    e.type === "text" ||
+    e.type === "heading" ||
+    e.type === "label" ||
+    e.type === "button" ||
+    e.type === "badge" ||
+    e.type === "input" ||
+    e.type === "textarea" ||
+    e.type === "liquidGlass" ||
+    e.type === "liquidGlassButton" ||
+    e.type === "liquidGlassCard" ||
+    e.type === "liquidGlassModal"
+  ) {
+
+    const fonts = [
+      "Inter", "Roboto", "Poppins", "Montserrat", "Open Sans", 
+      "Playfair Display", "Merriweather", "JetBrains Mono", 
+      "Fira Code", "Caveat", "Dancing Script", "Bebas Neue"
+    ];
+
+    let fontOptions = fonts.map(f => `<option value="${f}" ${(e.fontFamily || "Inter") === f ? "selected" : ""}>${f}</option>`).join("");
+
+    html += `
+
+      <div class="field full">
+        <label>Yazı Tipi (Font)</label>
+        <select onchange="updateSelected('fontFamily', this.value)">
+          ${fontOptions}
+        </select>
+      </div>
+
+    `;
+
+  }
+
+
   if (
     e.type === "text" ||
     e.type === "heading" ||
@@ -4302,13 +4468,14 @@ function renderEditPanel() {
 
   if (
     e.type === "button" ||
-    e.type === "badge"
+    e.type === "badge" ||
+    e.type === "progress"
   ) {
 
     html += `
 
       <div class="field">
-        <label>Arka plan</label>
+        <label>Arka plan / Çubuk Rengi</label>
 
         <input
           type="color"
@@ -4543,6 +4710,7 @@ function renderEditPanel() {
   if (
     e.type === "checkbox" ||
     e.type === "switch" ||
+    e.type === "miuiToggle" ||
     e.type === "radio"
   ) {
 
@@ -4652,16 +4820,30 @@ function renderEditPanel() {
 
     html += `
 
-      <div class="field full">
+      <div class="field">
 
-        <label>Değer %</label>
+        <label>Hedef Yüzde (örn: 100)</label>
 
         <input
           type="number"
-          min="0"
-          max="100"
-          value="${e.value || 50}"
-          onchange="updateSelected('value', this.value)"
+          min="1"
+          max="1000"
+          value="${e.targetValue ?? 100}"
+          onchange="updateSelected('targetValue', this.value)"
+        >
+
+      </div>
+
+      <div class="field">
+
+        <label>Dolum Süresi (Saniye)</label>
+
+        <input
+          type="number"
+          min="0.1"
+          step="0.1"
+          value="${e.duration ?? 3}"
+          onchange="updateSelected('duration', this.value)"
         >
 
       </div>
@@ -4900,6 +5082,23 @@ function renderEventsPanel() {
               }
 
               ${
+                e.type === "progress"
+                  ? `
+                    <option
+                      value="progressComplete"
+                      ${
+                        event.trigger === "progressComplete"
+                          ? "selected"
+                          : ""
+                      }
+                    >
+                      Hedef Yüzdeye Ulaşıldığında (Progress Complete)
+                    </option>
+                  `
+                  : ""
+              }
+
+              ${
                 e.type === "switch"
                   ? `
                     <option
@@ -4922,6 +5121,34 @@ function renderEventsPanel() {
                       }
                     >
                       Switch Kapatıldı
+                    </option>
+                  `
+                  : ""
+              }
+
+              ${
+                e.type === "miuiToggle"
+                  ? `
+                    <option
+                      value="toggleOn"
+                      ${
+                        event.trigger === "toggleOn"
+                          ? "selected"
+                          : ""
+                      }
+                    >
+                      Toggle Açık (Açıldığında)
+                    </option>
+
+                    <option
+                      value="toggleOff"
+                      ${
+                        event.trigger === "toggleOff"
+                          ? "selected"
+                          : ""
+                      }
+                    >
+                      Toggle Kapalı (Kapatıldığında)
                     </option>
                   `
                   : ""
@@ -5571,7 +5798,7 @@ function getElementOptions(
 
         if (switchesOnly) {
 
-          return element.type === "switch";
+          return element.type === "switch" || element.type === "miuiToggle";
 
         }
 
@@ -5583,7 +5810,8 @@ function getElementOptions(
           element.type === "label" ||
           element.type === "badge" ||
           element.type === "slider" ||
-          element.type === "osDialog"
+          element.type === "osDialog" ||
+          element.type === "miuiToggle"
         );
 
       }
@@ -5603,11 +5831,13 @@ function getElementOptions(
             (
               element.type === "switch"
                 ? "Switch"
-                : element.type === "slider"
-                  ? "Slider"
-                  : element.type === "osDialog"
-                    ? (element.dialogTitle || "OS Dialog")
-                    : element.id
+                : element.type === "miuiToggle"
+                  ? "MIUI Toggle"
+                  : element.type === "slider"
+                    ? "Slider"
+                    : element.type === "osDialog"
+                      ? (element.dialogTitle || "OS Dialog")
+                      : element.id
             )
           )}
         </option>
@@ -5698,6 +5928,8 @@ function addElement(type) {
 
     hidden: false,
 
+    fontFamily: "Inter",
+
     text:
       type === "text"
         ? "Yeni metin"
@@ -5707,39 +5939,43 @@ function addElement(type) {
             ? "Yeni etiket"
             : type === "button"
               ? "Yeni buton"
-              : type === "slider"
-                ? "Slider"
-                : type === "terminal"
-                  ? "$ devos\n$ ready..."
-                  : type === "textarea"
-                    ? ""
-                    : type === "checkbox"
-                      ? "Checkbox"
-                      : type === "radio"
-                        ? "Radio"
-                        : type === "badge"
-                          ? "Badge"
-                          : type === "avatar"
-                            ? "A"
-                            : type === "scrollview"
-                              ? "ScrollView içeriği"
-                              : type === "modal"
-                                ? "Modal"
-                                : type === "sidebar"
-                                  ? "☰\n\nAna Sayfa\n\nUygulamalar\n\nAyarlar"
-                                  : type === "liquidGlass"
-                                    ? "Liquid Glass"
-                                    : type === "liquidGlassButton"
-                                      ? "Glass Button"
-                                      : type === "liquidGlassCard"
-                                        ? "Glass Card"
-                                        : type === "liquidGlassNav"
-                                          ? "⌂  Ana Sayfa    Apps    ⚙ Ayarlar"
-                                          : type === "liquidGlassTabbar"
-                                            ? "⌂ Ana Sayfa    ◉ Uygulamalar    ⚙ Ayarlar"
-                                            : type === "liquidGlassModal"
-                                              ? "Glass Modal"
-                                              : "",
+              : type === "miuiToggle"
+                ? "Wi-Fi"
+                : type === "slider"
+                  ? "Slider"
+                  : type === "terminal"
+                    ? "$ devos\n$ ready..."
+                    : type === "textarea"
+                      ? ""
+                      : type === "checkbox"
+                        ? "Checkbox"
+                        : type === "radio"
+                          ? "Radio"
+                          : type === "badge"
+                            ? "Badge"
+                            : type === "avatar"
+                              ? "A"
+                              : type === "scrollview"
+                                ? "ScrollView içeriği"
+                                : type === "modal"
+                                  ? "Modal"
+                                  : type === "sidebar"
+                                    ? "☰\n\nAna Sayfa\n\nUygulamalar\n\nAyarlar"
+                                    : type === "liquidGlass"
+                                      ? "Liquid Glass"
+                                      : type === "liquidGlassButton"
+                                        ? "Glass Button"
+                                        : type === "liquidGlassCard"
+                                          ? "Glass Card"
+                                          : type === "liquidGlassNav"
+                                            ? "⌂  Ana Sayfa    Apps    ⚙ Ayarlar"
+                                            : type === "liquidGlassTabbar"
+                                              ? "⌂ Ana Sayfa    ◉ Uygulamalar    ⚙ Ayarlar"
+                                              : type === "liquidGlassModal"
+                                                ? "Glass Modal"
+                                                : "",
+
+    icon: type === "miuiToggle" ? "📶" : "",
 
     color: "#ffffff",
 
@@ -5757,7 +5993,11 @@ function addElement(type) {
 
     placeholder: "Metin gir...",
 
-    value: 50,
+    value: 0,
+
+    targetValue: 100,
+
+    duration: 3,
 
     min: 0,
 
@@ -5874,6 +6114,21 @@ function addElement(type) {
   }
 
 
+  if (type === "miuiToggle") {
+
+    element.w = 75;
+    element.h = 75;
+    element.text = "Wi-Fi";
+    element.icon = "📶";
+    element.checked = true;
+    element.activeBg = "#2563eb";
+    element.inactiveBg = "#1e293b";
+    element.activeColor = "#ffffff";
+    element.inactiveColor = "#94a3b8";
+
+  }
+
+
   if (type === "radio") {
 
     element.w = 180;
@@ -5914,6 +6169,17 @@ function addElement(type) {
 
     element.w = 90;
     element.h = 32;
+
+  }
+
+
+  if (type === "progress") {
+
+    element.w = 280;
+    element.h = 55;
+    element.value = 0;
+    element.targetValue = 100;
+    element.duration = 3;
 
   }
 
@@ -6177,6 +6443,8 @@ function updateSelected(
       "min",
       "max",
       "value",
+      "targetValue",
+      "duration",
       "glassOpacity",
       "blur",
       "saturation",
@@ -6432,19 +6700,23 @@ function addEvent() {
     trigger:
       selectedElement.type === "slider"
         ? "valueMatch"
-        : selectedElement.type === "spinner"
-          ? "timerEnd"
-          : selectedElement.type === "switch"
-            ? "switchOn"
-            : selectedElement.type === "pin"
-              ? "correctPin"
-              : selectedElement.type === "terminal"
-                ? "commandMatch"
-                : selectedElement.type === "timer"
-                  ? "timeUp"
-                  : selectedElement.type === "osDialog"
-                    ? "dialogConfirm"
-                    : "click",
+        : selectedElement.type === "progress"
+          ? "progressComplete"
+          : selectedElement.type === "miuiToggle"
+            ? "toggleOn"
+            : selectedElement.type === "spinner"
+              ? "timerEnd"
+              : selectedElement.type === "switch"
+                ? "switchOn"
+                : selectedElement.type === "pin"
+                  ? "correctPin"
+                  : selectedElement.type === "terminal"
+                    ? "commandMatch"
+                    : selectedElement.type === "timer"
+                      ? "timeUp"
+                      : selectedElement.type === "osDialog"
+                        ? "dialogConfirm"
+                        : "click",
 
     command: selectedElement.type === "terminal" ? "help" : (selectedElement.type === "slider" ? "100" : ""),
 
@@ -6523,14 +6795,14 @@ function addAction(
     type:
       selectedElement.type === "terminal"
         ? "printTerminal"
-        : selectedElement.type === "switch"
+        : (selectedElement.type === "switch" || selectedElement.type === "miuiToggle")
           ? "toggleSwitch"
           : "setText",
 
     target:
       selectedElement.type === "terminal"
         ? selectedElement.id
-        : selectedElement.type === "switch"
+        : (selectedElement.type === "switch" || selectedElement.type === "miuiToggle")
           ? selectedElement.id
           : getDefaultTarget(),
 
@@ -6652,7 +6924,7 @@ function changeActionType(
   if (type === "toggleSwitch") {
 
     action.target =
-      selectedElement.type === "switch"
+      (selectedElement.type === "switch" || selectedElement.type === "miuiToggle")
         ? selectedElement.id
         : getDefaultSwitchTarget();
 
@@ -6669,7 +6941,6 @@ function changeActionType(
 
     delete action.target;
     delete action.screen;
-    delete action.title;
 
   }
 
@@ -6774,7 +7045,7 @@ function getDefaultSwitchTarget() {
   const target =
     screen.elements.find(
       element =>
-        element.type === "switch"
+        element.type === "switch" || element.type === "miuiToggle"
     );
 
 
@@ -6978,7 +7249,7 @@ function executeAction(
   }
 
 
-  /* TOGGLE SWITCH */
+  /* TOGGLE SWITCH / MIUI TOGGLE */
 
   else if (
     action.type === "toggleSwitch"
@@ -6992,7 +7263,7 @@ function executeAction(
 
     if (
       target &&
-      target.type === "switch"
+      (target.type === "switch" || target.type === "miuiToggle")
     ) {
 
       target.checked =
@@ -7001,11 +7272,12 @@ function executeAction(
 
       renderCanvas();
 
+      const trigOn = target.type === "miuiToggle" ? "toggleOn" : "switchOn";
+      const trigOff = target.type === "miuiToggle" ? "toggleOff" : "switchOff";
+
       runEvent(
         target,
-        target.checked
-          ? "switchOn"
-          : "switchOff"
+        target.checked ? trigOn : trigOff
       );
 
     }
@@ -7377,6 +7649,14 @@ function deleteSelected() {
     selectedElement.id
   ];
 
+  clearInterval(
+    activeProgressAnimations[selectedElement.id]
+  );
+
+  delete activeProgressAnimations[
+    selectedElement.id
+  ];
+
 
   selectedElement =
     null;
@@ -7517,6 +7797,20 @@ function togglePreview() {
         );
 
         delete activeClockIntervals[id];
+
+      }
+    );
+
+    Object.keys(
+      activeProgressAnimations
+    ).forEach(
+      id => {
+
+        clearInterval(
+          activeProgressAnimations[id]
+        );
+
+        delete activeProgressAnimations[id];
 
       }
     );
@@ -7983,21 +8277,6 @@ function escapeAttr(
 
 
 /* =========================================================
-   HIDDEN ELEMENT SUPPORT
-========================================================= */
-
-const originalCreateElementNode =
-  createElementNode;
-
-
-function renderCanvasWithHiddenSupport() {
-
-  renderCanvas();
-
-}
-
-
-/* =========================================================
    KEYBOARD
 ========================================================= */
 
@@ -8018,6 +8297,7 @@ document.addEventListener(
 
 
     if (
+      event.ctrlKey &&
       event.ctrlKey &&
       event.key.toLowerCase() === "z"
     ) {
@@ -8058,10 +8338,6 @@ document.addEventListener(
 /* =========================================================
    PATCH HIDDEN RENDER
 ========================================================= */
-
-const oldRenderCanvas =
-  renderCanvas;
-
 
 renderCanvas =
   function() {
